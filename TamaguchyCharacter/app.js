@@ -112,7 +112,7 @@ var AliveClass = (function () {
             this.actionManager.move(speed, 0, 250);
         }
         //else {
-        //    this.drawRandomResourceByCategory(AgentConstants.CHARACTER_ACTIVATION);
+        //    this.drawRandomResourceByCategory(AgentConstants.CHARACTER_ACTIVATION);..
         //}
     };
     AliveClass.prototype.onBackgroundTick = function (time) {

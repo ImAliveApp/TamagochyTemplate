@@ -160,7 +160,7 @@ class AliveClass implements IAliveAgent {
             this.actionManager.move(speed, 0, 250);
         }
         //else {
-        //    this.drawRandomResourceByCategory(AgentConstants.CHARACTER_ACTIVATION);
+        //    this.drawRandomResourceByCategory(AgentConstants.CHARACTER_ACTIVATION);..
         //}
     }
 
