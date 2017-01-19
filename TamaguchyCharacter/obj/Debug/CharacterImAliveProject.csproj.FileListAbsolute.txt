@@ -1,0 +1,5 @@
+C:\Users\Hay Zohar\Documents\Visual Studio 2015\Projects\CharacterImAliveProject\CharacterImAliveProject\bin\CharacterImAliveProject.dll.config
+C:\Users\Hay Zohar\Documents\Visual Studio 2015\Projects\CharacterImAliveProject\CharacterImAliveProject\bin\CharacterImAliveProject.dll
+C:\Users\Hay Zohar\Documents\Visual Studio 2015\Projects\CharacterImAliveProject\CharacterImAliveProject\bin\CharacterImAliveProject.pdb
+C:\Users\Hay Zohar\Documents\Visual Studio 2015\Projects\CharacterImAliveProject\CharacterImAliveProject\obj\Debug\CharacterImAliveProject.dll
+C:\Users\Hay Zohar\Documents\Visual Studio 2015\Projects\CharacterImAliveProject\CharacterImAliveProject\obj\Debug\CharacterImAliveProject.pdb

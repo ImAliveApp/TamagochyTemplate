@@ -1,0 +1,3 @@
+﻿interface ICalendarManager {
+    getWeeklyEvents(): ICalendarEvent[];
+}

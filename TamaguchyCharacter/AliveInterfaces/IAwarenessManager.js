@@ -1,0 +1,2 @@
+;
+//# sourceMappingURL=IAwarenessManager.js.map
