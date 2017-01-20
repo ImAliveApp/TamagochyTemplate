@@ -6,7 +6,7 @@ var AliveClass = (function () {
         this.lastDrawTime = 0;
         this.lastPlaySoundTime = 0;
     }
-    AliveClass.prototype.onStart = function (mHandler) {
+    AliveClass.prototype.onStart = function (mHandler, disabledPermissions) {
         this.actionManager = mHandler.getActionManager();
         this.resourceManager = mHandler.getResourceManager();
         this.databaseManager = mHandler.getDatabaseManager();

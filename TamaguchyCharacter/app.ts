@@ -39,7 +39,7 @@ class AliveClass implements IAliveAgent {
         this.lastPlaySoundTime = 0;
     }
 
-    onStart(mHandler: IManagersHandler): void {
+    onStart(mHandler: IManagersHandler, disabledPermissions: string[]): void {
         this.actionManager = mHandler.getActionManager();
         this.resourceManager = mHandler.getResourceManager();
         this.databaseManager = mHandler.getDatabaseManager();
