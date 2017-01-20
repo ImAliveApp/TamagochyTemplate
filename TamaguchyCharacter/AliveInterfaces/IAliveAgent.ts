@@ -2,7 +2,7 @@
     onTick(currentTime: number): void;
     onBackgroundTick(currentTime: number);
     onStart(mHandler: IManagersHandler): void;
-    onActionReceived(actionName: string): void;
+    onActionReceived(actionName: string, jsonedData: string): void;
     onMove(oldX: number, oldY: number, newX: number, newY: number): void;
     onRelease(currentX: number, currentY: number): void;
     onPick(currentX: number, currentY: number): void;

@@ -118,7 +118,7 @@ var AliveClass = (function () {
     AliveClass.prototype.onBackgroundTick = function (time) {
         this.onTick(time);
     };
-    AliveClass.prototype.onActionReceived = function (categoryName) {
+    AliveClass.prototype.onActionReceived = function (categoryName, jsonedData) {
         if (categoryName == "SCREEN_ON") {
             this.menuManager.setProperty("healthProgress", "progress", this.getHealth().toString());
         }

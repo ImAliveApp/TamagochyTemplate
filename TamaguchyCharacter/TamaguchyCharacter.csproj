@@ -30,6 +30,7 @@
   </ItemGroup>
   <ItemGroup>
     <TypeScriptCompile Include="AliveClasses\AgentConstants.ts" />
+    <TypeScriptCompile Include="AliveClasses\AliveSmsData.ts" />
     <TypeScriptCompile Include="AliveClasses\Calendar\ICalendarEvent.ts" />
     <TypeScriptCompile Include="AliveClasses\IAliveLocation.ts" />
     <TypeScriptCompile Include="AliveClasses\IAliveResource.ts" />
