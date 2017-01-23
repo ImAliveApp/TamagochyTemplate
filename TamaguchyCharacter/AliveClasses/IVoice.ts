@@ -1,8 +1,8 @@
 ﻿interface IVoice {
     getLatency(): number;
-    getLanguage(): number;
+    getLanguage(): string;
     getQuality(): number;
-    getName(): number;
+    getName(): string;
     isNetworkConnectionRequired(): boolean;
-    getFeatures(): String[];
+    getFeatures(): string[];
 }
