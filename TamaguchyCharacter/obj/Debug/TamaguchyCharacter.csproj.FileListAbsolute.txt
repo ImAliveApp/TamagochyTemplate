@@ -10,3 +10,9 @@ C:\Users\Hay Zohar\Desktop\codes\TamaguchyCharacter\TamaguchyCharacter\bin\Tamag
 C:\Users\Hay Zohar\Desktop\codes\TamaguchyCharacter\TamaguchyCharacter\obj\Debug\TamaguchyCharacter.csprojResolveAssemblyReference.cache
 C:\Users\Hay Zohar\Desktop\codes\TamaguchyCharacter\TamaguchyCharacter\obj\Debug\TamaguchyCharacter.dll
 C:\Users\Hay Zohar\Desktop\codes\TamaguchyCharacter\TamaguchyCharacter\obj\Debug\TamaguchyCharacter.pdb
+C:\Users\Hay Zohar\Documents\GitHub\TamaguchyProject\TamaguchyCharacter\bin\TamaguchyCharacter.dll.config
+C:\Users\Hay Zohar\Documents\GitHub\TamaguchyProject\TamaguchyCharacter\bin\TamaguchyCharacter.dll
+C:\Users\Hay Zohar\Documents\GitHub\TamaguchyProject\TamaguchyCharacter\bin\TamaguchyCharacter.pdb
+C:\Users\Hay Zohar\Documents\GitHub\TamaguchyProject\TamaguchyCharacter\obj\Debug\TamaguchyCharacter.csprojResolveAssemblyReference.cache
+C:\Users\Hay Zohar\Documents\GitHub\TamaguchyProject\TamaguchyCharacter\obj\Debug\TamaguchyCharacter.dll
+C:\Users\Hay Zohar\Documents\GitHub\TamaguchyProject\TamaguchyCharacter\obj\Debug\TamaguchyCharacter.pdb

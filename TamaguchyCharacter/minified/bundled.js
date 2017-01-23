@@ -6,7 +6,7 @@ var AliveClass = (function () {
         this.lastDrawTime = 0;
         this.lastPlaySoundTime = 0;
     }
-    AliveClass.prototype.onStart = function (mHandler) {
+    AliveClass.prototype.onStart = function (mHandler, disabledPermissions) {
         this.actionManager = mHandler.getActionManager();
         this.resourceManager = mHandler.getResourceManager();
         this.databaseManager = mHandler.getDatabaseManager();
@@ -112,13 +112,13 @@ var AliveClass = (function () {
             this.actionManager.move(speed, 0, 250);
         }
         //else {
-        //    this.drawRandomResourceByCategory(AgentConstants.CHARACTER_ACTIVATION);
+        //    this.drawRandomResourceByCategory(AgentConstants.CHARACTER_ACTIVATION);..
         //}
     };
     AliveClass.prototype.onBackgroundTick = function (time) {
         this.onTick(time);
     };
-    AliveClass.prototype.onActionReceived = function (categoryName) {
+    AliveClass.prototype.onActionReceived = function (categoryName, jsonedData) {
         if (categoryName == "SCREEN_ON") {
             this.menuManager.setProperty("healthProgress", "progress", this.getHealth().toString());
         }
@@ -428,6 +428,12 @@ var AgentConstants = (function () {
 }());
 ;
 //# sourceMappingURL=AgentConstants.js.map
+var AliveSmsData = (function () {
+    function AliveSmsData() {
+    }
+    return AliveSmsData;
+}());
+//# sourceMappingURL=AliveSmsData.js.map
 //# sourceMappingURL=IAliveLocation.js.map
 ;
 //# sourceMappingURL=IAliveResource.js.map
@@ -3137,14 +3143,6 @@ var ViewType = (function () {
     return ViewType;
 }());
 //# sourceMappingURL=ViewType.js.map
-//# sourceMappingURL=IBaseMenuItem.js.map
-//# sourceMappingURL=IButtonMenuItem.js.map
-//# sourceMappingURL=ICheckBoxMenuItem.js.map
-//# sourceMappingURL=IMenuHeader.js.map
-//# sourceMappingURL=IPaintMenuItem.js.map
-//# sourceMappingURL=IPictureMenuItem.js.map
-//# sourceMappingURL=IProgressBarMenuItem.js.map
-//# sourceMappingURL=ITextBoxMenuItem.js.map
 //# sourceMappingURL=IAliveLatLng.js.map
 //# sourceMappingURL=IAliveLatLngBounds.js.map
 //# sourceMappingURL=IAliveLocation.js.map
@@ -3791,3 +3789,11 @@ var PlaceType = (function () {
     return PlaceType;
 }());
 //# sourceMappingURL=PlaceType.js.map
+//# sourceMappingURL=IBaseMenuItem.js.map
+//# sourceMappingURL=IButtonMenuItem.js.map
+//# sourceMappingURL=ICheckBoxMenuItem.js.map
+//# sourceMappingURL=IMenuHeader.js.map
+//# sourceMappingURL=IPaintMenuItem.js.map
+//# sourceMappingURL=IPictureMenuItem.js.map
+//# sourceMappingURL=IProgressBarMenuItem.js.map
+//# sourceMappingURL=ITextBoxMenuItem.js.map

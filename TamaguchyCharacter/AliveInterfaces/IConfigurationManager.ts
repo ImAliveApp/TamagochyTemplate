@@ -10,4 +10,7 @@
     getCurrentTime(): ICurrentTime;
     getMaximalResizeRatio(): number;
     getSystemLanguage(): string;
+    getSystemISO3Language(): string;
+    getSystemCountry(): string;
+    getSystemISO3Country(): string;
 };
