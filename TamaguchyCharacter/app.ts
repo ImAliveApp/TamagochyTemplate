@@ -39,15 +39,15 @@ class AliveClass implements IAliveAgent {
         this.lastPlaySoundTime = 0;
     }
 
-    onStart(mHandler: IManagersHandler, disabledPermissions: string[]): void {
-        this.actionManager = mHandler.getActionManager();
-        this.resourceManager = mHandler.getResourceManager();
-        this.databaseManager = mHandler.getDatabaseManager();
-        this.characterManager = mHandler.getCharacterManager();
-        this.menuManager = mHandler.getMenuManager();
-        this.configurationMananger = mHandler.getConfigurationManager();
-        this.restManager = mHandler.getRestManager();
-        this.awarenessManager = mHandler.getAwarenessManager();
+    onStart(handler: IManagersHandler, disabledPermissions: string[]): void {
+        this.actionManager = handler.getActionManager();
+        this.resourceManager = handler.getResourceManager();
+        this.databaseManager = handler.getDatabaseManager();
+        this.characterManager = handler.getCharacterManager();
+        this.menuManager = handler.getMenuManager();
+        this.configurationMananger = handler.getConfigurationManager();
+        this.restManager = handler.getRestManager();
+        this.awarenessManager = handler.getAwarenessManager();
         this.resourceManagerHelper = new ResourceManagerHelper(this.resourceManager);
         this.actionManager.move(0, this.configurationMananger.getScreenHeight(), 0);
         this.resizeRatio = this.configurationMananger.getMaximalResizeRatio();
