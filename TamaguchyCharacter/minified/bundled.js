@@ -198,34 +198,47 @@ var AliveClass = (function () {
         progress.Height = 1;
         progress.Width = menuBuilder.getMaxColumns();
         progress.TextColor = "#FFFFFF";
+        progress.FrontColor = "#F56CA4";
         progress.BackgroundColor = "#000000";
         progress.Name = "healthProgress";
         progress.Progress = health;
         progress.MaxProgress = 100;
-        progress.FrontColor = "#FF0000";
-        var feedButton = new ButtonMenuItem();
-        feedButton.InitialX = 0;
-        feedButton.InitialY = 3;
-        feedButton.BackgroundColor = "#000000";
-        feedButton.Height = 1;
-        feedButton.Name = "feedButton";
-        feedButton.Text = "Food";
-        feedButton.TextColor = "#FFFFFF";
-        feedButton.Width = 2;
-        var drinkButton = new ButtonMenuItem();
-        drinkButton.InitialX = 2;
-        drinkButton.InitialY = 3;
-        drinkButton.BackgroundColor = "#000000";
-        drinkButton.Height = 1;
-        drinkButton.Name = "drinkButton";
-        drinkButton.Text = "Drink";
-        drinkButton.TextColor = "#FFFFFF";
-        drinkButton.Width = 2;
+        var button = new ButtonMenuItem();
+        button.InitialX = 0;
+        button.InitialY = 3;
+        button.Height = 1;
+        button.Width = 2;
+        button.Name = "button";
+        button.Text = "Example";
+        button.TextColor = "#FFFFFF";
+        button.BackgroundColor = "#F56CA4";
+        var checkBox = new CheckBoxMenuItem();
+        checkBox.InitialX = 2;
+        checkBox.InitialY = 3;
+        checkBox.Height = 1;
+        checkBox.Width = 2;
+        checkBox.Name = "checkBox";
+        checkBox.Text = "Checked";
+        checkBox.TextColor = "#FFFFFF";
+        checkBox.FrontColor = "#F56CA4";
+        checkBox.BackgroundColor = "#000000";
+        checkBox.Checked = true;
+        checkBox.UncheckedText = "Unchecked";
+        var textBox = new TextBoxMenuItem();
+        textBox.InitialX = 0;
+        textBox.InitialY = 4;
+        textBox.Height = 1;
+        textBox.Width = 2;
+        textBox.Name = "textBox";
+        textBox.Text = "Example";
+        textBox.TextColor = "#F56CA4";
+        textBox.BackgroundColor = "#000000";
         menuBuilder.createMenuHeader(menuHeader);
         menuBuilder.createPicture(picture);
         menuBuilder.createProgressBar(progress);
-        menuBuilder.createButton(feedButton);
-        menuBuilder.createButton(drinkButton);
+        menuBuilder.createButton(button);
+        menuBuilder.createCheckBox(checkBox);
+        menuBuilder.createTextBox(textBox);
     };
     AliveClass.prototype.onSpeechRecognitionResults = function (results) { };
     AliveClass.prototype.onResponseReceived = function (response) {
@@ -3143,6 +3156,14 @@ var ViewType = (function () {
     return ViewType;
 }());
 //# sourceMappingURL=ViewType.js.map
+//# sourceMappingURL=IBaseMenuItem.js.map
+//# sourceMappingURL=IButtonMenuItem.js.map
+//# sourceMappingURL=ICheckBoxMenuItem.js.map
+//# sourceMappingURL=IMenuHeader.js.map
+//# sourceMappingURL=IPaintMenuItem.js.map
+//# sourceMappingURL=IPictureMenuItem.js.map
+//# sourceMappingURL=IProgressBarMenuItem.js.map
+//# sourceMappingURL=ITextBoxMenuItem.js.map
 //# sourceMappingURL=IAliveLatLng.js.map
 //# sourceMappingURL=IAliveLatLngBounds.js.map
 //# sourceMappingURL=IAliveLocation.js.map
@@ -3789,11 +3810,3 @@ var PlaceType = (function () {
     return PlaceType;
 }());
 //# sourceMappingURL=PlaceType.js.map
-//# sourceMappingURL=IBaseMenuItem.js.map
-//# sourceMappingURL=IButtonMenuItem.js.map
-//# sourceMappingURL=ICheckBoxMenuItem.js.map
-//# sourceMappingURL=IMenuHeader.js.map
-//# sourceMappingURL=IPaintMenuItem.js.map
-//# sourceMappingURL=IPictureMenuItem.js.map
-//# sourceMappingURL=IProgressBarMenuItem.js.map
-//# sourceMappingURL=ITextBoxMenuItem.js.map
