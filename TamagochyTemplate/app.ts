@@ -168,13 +168,13 @@ class AliveClass implements IAliveAgent {
         this.onTick(time);
     }
 
-    onActionReceived(actionName: string, jsonedData: string): void {
-        if (actionName == "SCREEN_ON") {
+    onEventOccurred(eventName: string, jsonedData: string): void {
+        if (eventName == "SCREEN_ON") {
             this.menuManager.setProperty("healthProgress", "progress", this.getHealth().toString());
         }
 
-        this.actionManager.showMessage(actionName + " received");
-        this.drawAndPlayRandomResourceByCategory(actionName);
+        this.actionManager.showMessage(eventName + " received");
+        this.drawAndPlayRandomResourceByCategory(eventName);
     }
 
     onMove(oldX: number, oldY: number, newX: number, newY: number): void {

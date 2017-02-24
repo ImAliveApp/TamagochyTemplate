@@ -118,12 +118,12 @@ var AliveClass = (function () {
     AliveClass.prototype.onBackgroundTick = function (time) {
         this.onTick(time);
     };
-    AliveClass.prototype.onActionReceived = function (actionName, jsonedData) {
-        if (actionName == "SCREEN_ON") {
+    AliveClass.prototype.onEventOccurred = function (eventName, jsonedData) {
+        if (eventName == "SCREEN_ON") {
             this.menuManager.setProperty("healthProgress", "progress", this.getHealth().toString());
         }
-        this.actionManager.showMessage(actionName + " received");
-        this.drawAndPlayRandomResourceByCategory(actionName);
+        this.actionManager.showMessage(eventName + " received");
+        this.drawAndPlayRandomResourceByCategory(eventName);
     };
     AliveClass.prototype.onMove = function (oldX, oldY, newX, newY) {
         var Xdiff = Math.abs(oldX - newX);
