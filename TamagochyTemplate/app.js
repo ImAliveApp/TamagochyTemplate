@@ -31,7 +31,7 @@ var AliveClass = (function () {
         }
     };
     AliveClass.prototype.onTick = function (time) {
-        if (!this.characterManager.isCharacterBeingDragged() && !this.configurationMananger.getIsScreenOff())
+        if (!this.characterManager.isCharacterBeingDragged() && !this.configurationMananger.isScreenOff())
             this.reactToSurfaceChange();
         this.currentTime = time;
         if (this.currentTime - this.lastDrawTime > 5000) {

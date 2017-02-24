@@ -3,10 +3,10 @@
     getScreenWidth(): number;
     getScreenOrientation(): number;
     getCurrentSurfaceAngle(): number;
-    getIsScreenOff(): boolean;
-    getIsSoundPlaying(): boolean;
-    getIsInternetConnected(): boolean;
-    getIsAirplaneModeOn(): boolean;
+    isScreenOff(): boolean;
+    isSoundPlaying(): boolean;
+    isInternetConnected(): boolean;
+    isAirplaneModeOn(): boolean;
     getCurrentTime(): ICurrentTime;
     getMaximalResizeRatio(): number;
     getSystemLanguage(): string;
