@@ -118,7 +118,7 @@ var AliveClass = (function () {
     AliveClass.prototype.onBackgroundTick = function (time) {
         this.onTick(time);
     };
-    AliveClass.prototype.onEventOccurred = function (eventName, jsonedData) {
+    AliveClass.prototype.onPhoneEventOccurred = function (eventName, jsonedData) {
         if (eventName == "SCREEN_ON") {
             this.menuManager.setProperty("healthProgress", "progress", this.getHealth().toString());
         }
@@ -453,6 +453,7 @@ var AliveSmsData = (function () {
 //# sourceMappingURL=IAliveUserActivity.js.map
 //# sourceMappingURL=IAliveWeather.js.map
 //# sourceMappingURL=ICurrentTime.js.map
+//# sourceMappingURL=IMenuBuilder.js.map
 //# sourceMappingURL=ITime.js.map
 //# sourceMappingURL=IVoice.js.map
 var ResourceManagerHelper = (function () {

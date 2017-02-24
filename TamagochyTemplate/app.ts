@@ -168,7 +168,7 @@ class AliveClass implements IAliveAgent {
         this.onTick(time);
     }
 
-    onEventOccurred(eventName: string, jsonedData: string): void {
+    onPhoneEventOccurred(eventName: string, jsonedData: string): void {
         if (eventName == "SCREEN_ON") {
             this.menuManager.setProperty("healthProgress", "progress", this.getHealth().toString());
         }
