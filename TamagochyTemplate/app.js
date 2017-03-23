@@ -54,6 +54,14 @@ var AliveClass = (function () {
         }
     };
     /**
+     * This method gets called by the system every 1 hour (may be in a different rate depending on the device).
+     * Note: this method only gets called when the screen is OFF.
+     * @param time The current time (in milliseconds) on the device.
+     */
+    AliveClass.prototype.onBackgroundTick = function (time) {
+        this.onTick(time);
+    };
+    /**
      * This method have a chance of 85% to draw and play a sound that is related to a category
          except the eating, drinking and laughing categories.
      */
@@ -139,14 +147,6 @@ var AliveClass = (function () {
         else {
             this.drawRandomResourceByCategory(AgentConstants.CHARACTER_ACTIVATION);
         }
-    };
-    /**
-     * This method gets called by the system every 1 hour (may be in a different rate depending on the device).
-     * Note: this method only gets called when the screen is OFF.
-     * @param time The current time (in milliseconds) on the device.
-     */
-    AliveClass.prototype.onBackgroundTick = function (time) {
-        this.onTick(time);
     };
     /**
      * This method gets called whenever a phone event (that you registered to) occur on the phone.
@@ -399,8 +399,8 @@ var AliveClass = (function () {
             this.actionManager.playSound(sound);
         }
     };
+    // ReSharper disable once InconsistentNaming
+    AliveClass.UNREGISTERED_CATEGORY_RESOURCE = -999;
     return AliveClass;
 }());
-// ReSharper disable once InconsistentNaming
-AliveClass.UNREGISTERED_CATEGORY_RESOURCE = -999;
 //# sourceMappingURL=app.js.map

@@ -96,6 +96,15 @@ class AliveClass implements IAliveAgent {
     }
 
     /**
+     * This method gets called by the system every 1 hour (may be in a different rate depending on the device).
+     * Note: this method only gets called when the screen is OFF.
+     * @param time The current time (in milliseconds) on the device.
+     */
+    onBackgroundTick(time: number) {
+        this.onTick(time);
+    }
+
+    /**
      * This method have a chance of 85% to draw and play a sound that is related to a category
          except the eating, drinking and laughing categories.
      */
@@ -193,15 +202,6 @@ class AliveClass implements IAliveAgent {
         else {
             this.drawRandomResourceByCategory(AgentConstants.CHARACTER_ACTIVATION);
         }
-    }
-
-    /**
-     * This method gets called by the system every 1 hour (may be in a different rate depending on the device).
-     * Note: this method only gets called when the screen is OFF.
-     * @param time The current time (in milliseconds) on the device.
-     */
-    onBackgroundTick(time: number) {
-        this.onTick(time);
     }
 
     /**
