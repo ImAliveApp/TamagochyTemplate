@@ -6,6 +6,12 @@ This sample is of a character that act as a tamagochy, the code responds to acti
 Once an event occure (such as the user plugged the phone to a power supply) the character will activate the proper image and sound resource
 that you have set.
 
+### Current actions:
+The Tamagochy template have the following actions available in its Character Menu:
+1. eating: clicking the 'Eat' button will activate image and sound resources from the 'eating' category.
+2. drinking: clicking the 'Drink' button will activate image and sound resources from the 'drinking' category.
+3. laughing: clicking the 'Tickle me!' button will activate image and sound resources from the 'drinking' category.
+
 ### How to use:
 In order to use this template, do the following steps:
 
