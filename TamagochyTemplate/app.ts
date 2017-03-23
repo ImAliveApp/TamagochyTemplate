@@ -4,6 +4,9 @@ class AliveClass implements IAliveAgent {
     // ReSharper disable once InconsistentNaming
     private static UNREGISTERED_CATEGORY_RESOURCE = -999;
 
+    private lastPhoneEventOccurred: string;
+    private lastUserInputTime: number;
+
     private actionManager: IActionManager;
     private resourceManager: IResourceManager;
     private databaseManager: IDatabaseManager;
@@ -24,7 +27,6 @@ class AliveClass implements IAliveAgent {
     private lastFallLeftTime: number;
     private lastFallRightTime: number;
     private currentTime: number;
-    private lastPlaySoundTime: number;
     private lastDrawTime: number;
     private resizeRatio: number;
 
@@ -36,10 +38,16 @@ class AliveClass implements IAliveAgent {
         this.lastTime = 0;
         this.currentTime = 0;
         this.lastDrawTime = 0;
-        this.lastPlaySoundTime = 0;
     }
 
+    /**
+     * This method gets called once when the character is being activated by the system.
+     * @param handler An object that allows the code to get reference to the managers.
+     * @param disabledPermissions A list of permissions that the user disabled.
+     */
     onStart(handler: IManagersHandler, disabledPermissions: string[]): void {
+        this.lastUserInputTime = 0;
+        this.lastPhoneEventOccurred = "";
         this.actionManager = handler.getActionManager();
         this.resourceManager = handler.getResourceManager();
         this.databaseManager = handler.getDatabaseManager();
@@ -63,8 +71,14 @@ class AliveClass implements IAliveAgent {
             this.Hp = 100;
             this.databaseManager.saveObject("health", "100");
         }
+
     }
 
+    /**
+     * This method gets called every 250 milliseconds by the system, any logic updates to the state of your character should occur here.
+     * Note: onTick only gets called when the screen is ON.
+     * @param time The current time (in milliseconds) on the device.
+     */
     onTick(time: number): void {
         if (!this.characterManager.isCharacterBeingDragged() && !this.configurationMananger.isScreenOff())
             this.reactToSurfaceChange();
@@ -75,41 +89,46 @@ class AliveClass implements IAliveAgent {
             this.DrawAndPlayRandomNormalResource();
         }
 
-        if (this.currentTime - this.lastHungerTime > 10000) {
+        if (this.currentTime - this.lastHungerTime > 100000) {
             this.lastHungerTime = this.currentTime;
             this.Hungry();
         }
     }
 
+    /**
+     * This method have a chance of 85% to draw and play a sound that is related to a category
+         except the eating, drinking and laughing categories.
+     */
     DrawAndPlayRandomNormalResource(): void {
         let random = Math.random();
         this.currentRandomDrawingCategory = "CHARACTER_ACTIVATION";
         this.actionManager.stopSound();
+        if (random > 0.85) {
+            let allCharacterCategories = this.resourceManager.getAllResourceCategories();
+            allCharacterCategories.splice(allCharacterCategories.indexOf('eating'), 1);
+            allCharacterCategories.splice(allCharacterCategories.indexOf('drinking'), 1);
+            allCharacterCategories.splice(allCharacterCategories.indexOf('laughing'), 1);
 
-        if (random < 0.25) {
-            this.currentRandomDrawingCategory = "reading";
-        }
-        else if (random < 0.50) {
-            this.currentRandomDrawingCategory = "dancing";
-        }
-        else if (random < 0.75) {
-            this.currentRandomDrawingCategory = "singing";
-        }
-        else {
-            this.currentRandomDrawingCategory = "play_guitar";
+            let randomIndex = Math.floor(Math.random() * (allCharacterCategories.length - 1));
+
+            this.currentRandomDrawingCategory = allCharacterCategories[randomIndex];
         }
 
         this.lastDrawTime = this.configurationMananger.getCurrentTime().currentTimeMillis;
         this.drawAndPlayRandomResourceByCategory(this.currentRandomDrawingCategory);
+
     }
 
+    /**
+     * This method reduce the health of the character by 10.
+       The health of the character is shown by the progress bar in the character menu.
+     */
     Hungry(): void {
         this.Hp = this.Hp - 10;
         if (this.Hp < 0)
             this.Hp = 0;
 
-        if (this.Hp < 50)
-        {
+        if (this.Hp < 50) {
             this.drawAndPlayRandomResourceByCategory("crying");
         }
 
@@ -117,6 +136,9 @@ class AliveClass implements IAliveAgent {
         this.menuManager.setProperty("healthProgress", "progress", this.Hp.toString());
     }
 
+    /**
+     * This method will move your character on the screen depending on the surface angle of the phone.
+     */
     reactToSurfaceChange(): void {
         let speed = -999;
         let category = "";
@@ -130,6 +152,9 @@ class AliveClass implements IAliveAgent {
             else if (angle > 290 && angle < 350) {
                 speed = angle - 350;
                 category = AgentConstants.ON_FALLING_LEFT;
+            }
+            else {
+                category = AgentConstants.CHARACTER_ACTIVATION;
             }
         }
         else {
@@ -151,6 +176,12 @@ class AliveClass implements IAliveAgent {
             }
         }
 
+        let canChangeMode = this.currentTime - this.lastUserInputTime > 5000
+            && this.currentTime - this.lastDrawTime > 5000;
+
+        if (!canChangeMode)
+            return;
+
         if (speed != -999) {
             this.actionManager.stopSound();
             this.drawRandomResourceByCategory(category);
@@ -159,15 +190,26 @@ class AliveClass implements IAliveAgent {
 
             this.actionManager.move(speed, 0, 250);
         }
-        //else {
-        //    this.drawRandomResourceByCategory(AgentConstants.CHARACTER_ACTIVATION);..
-        //}
+        else {
+            this.drawRandomResourceByCategory(AgentConstants.CHARACTER_ACTIVATION);
+        }
     }
 
+    /**
+     * This method gets called by the system every 1 hour (may be in a different rate depending on the device).
+     * Note: this method only gets called when the screen is OFF.
+     * @param time The current time (in milliseconds) on the device.
+     */
     onBackgroundTick(time: number) {
         this.onTick(time);
     }
 
+    /**
+     * This method gets called whenever a phone event (that you registered to) occur on the phone.
+     * @param eventName The name of the event that occurred.
+     * @param jsonedData The data of the event that occurred.
+     * For example, SMS_RECEIVED event will hold data about who sent the SMS, and the SMS content.
+     */
     onPhoneEventOccurred(eventName: string, jsonedData: string): void {
         if (eventName == "SCREEN_ON") {
             this.menuManager.setProperty("healthProgress", "progress", this.getHealth().toString());
@@ -177,11 +219,17 @@ class AliveClass implements IAliveAgent {
         this.drawAndPlayRandomResourceByCategory(eventName);
     }
 
+    /**
+     * This method gets called when the user is holding and moving the image of your character (on screen).
+     * @param oldX The X coordinate in the last tick (Top left).
+     * @param oldY The Y coordinate in the last tick (Top left).
+     * @param newX The X coordinate in the current tick (Top left).
+     * @param newY The Y coordinate in the current tick (Top left).
+     */
     onMove(oldX: number, oldY: number, newX: number, newY: number): void {
         let Xdiff = Math.abs(oldX - newX);
         let Ydiff = Math.abs(oldY - newY);
-        if (Xdiff > Ydiff)
-        {
+        if (Xdiff > Ydiff) {
             if (newX > oldX) {
                 this.drawAndPlayRandomResourceByCategory(AgentConstants.ON_MOVE_RIGHT);
             }
@@ -199,6 +247,11 @@ class AliveClass implements IAliveAgent {
         }
     }
 
+    /**
+     * This method gets called when the user raised his finger off the character image (on screen).
+     * @param currentX The X coordinate of the character image on screen (Top left).
+     * @param currentY The Y coordinate of the character image on the screen (Top left).
+     */
     onRelease(currentX: number, currentY: number): void {
         this.drawAndPlayRandomResourceByCategory(AgentConstants.ON_RELEASE);
         let screenHeight = this.configurationMananger.getScreenHeight();
@@ -207,18 +260,29 @@ class AliveClass implements IAliveAgent {
         }
     }
 
+    /**
+     * This method gets called whenever the user is holding the character image (on screen).
+     * @param currentX The current X coordinate of the character image (Top left).
+     * @param currentY The current Y coordinate of the character image (Top left).
+     */
     onPick(currentX: number, currentY: number): void {
         this.drawAndPlayRandomResourceByCategory(AgentConstants.ON_PICK);
     }
 
-    onMenuItemSelected(itemName: string): void {
-        if (itemName == "feedButton" || itemName == "drinkButton") {
+    /**
+     * This method gets called whenever the user has pressed a view in the character menu.
+     * @param viewName The 'Name' property of the view that was pressed.
+     */
+    onMenuItemSelected(viewName: string): void {
+        if (viewName == "feedButton" || viewName == "drinkButton") {
             this.Hp = this.Hp + 10;
             if (this.Hp > 100)
                 this.Hp = 100;
 
+            this.lastUserInputTime = this.configurationMananger.getCurrentTime().currentTimeMillis;
+
             this.lastEatingTime = this.configurationMananger.getCurrentTime().currentTimeMillis;
-            if (itemName == "feedButton") {
+            if (viewName == "feedButton") {
                 this.drawAndPlayRandomResourceByCategory("eating");
             }
             else {
@@ -228,11 +292,14 @@ class AliveClass implements IAliveAgent {
             this.databaseManager.saveObject("health", this.Hp.toString());
             this.menuManager.setProperty("healthProgress", "progress", this.Hp.toString());
         }
-        else if (itemName == "tickleButton") {
+        else if (viewName == "tickleButton") {
             this.drawAndPlayRandomResourceByCategory("laughing");
         }
     }
 
+    /**
+     * This method returns the current health of the character from the local database.
+     */
     getHealth(): number {
         if (this.databaseManager.isObjectExist("health")) {
             return parseInt(this.databaseManager.getObject("health"));
@@ -241,11 +308,15 @@ class AliveClass implements IAliveAgent {
         return 100;
     }
 
+    /**
+     * This method gets called once just before the onStart method and is where the character menu views are defined.
+     * @param menuBuilder An object that fills the character menu.
+     */
     onConfigureMenuItems(menuBuilder: IMenuBuilder): void {
         let menuHeader = new MenuHeader();
         menuHeader.TextColor = "#ffffff";
         menuHeader.BackgroundColor = "#000000";
-        
+
         let picture = new PictureMenuItem();
         picture.InitialX = 0;
         picture.InitialY = 0;
@@ -262,61 +333,68 @@ class AliveClass implements IAliveAgent {
         progress.Height = 1;
         progress.Width = menuBuilder.getMaxColumns();
         progress.TextColor = "#FFFFFF";
-        progress.FrontColor = "#F56CA4";
+        progress.FrontColor = "#FF0000";
         progress.BackgroundColor = "#000000";
         progress.Name = "healthProgress";
         progress.Progress = health;
         progress.MaxProgress = 100;
 
-        let button = new ButtonMenuItem();
-        button.InitialX = 0;
-        button.InitialY = 3;
-        button.Height = 1;
-        button.Width = 2;
-        button.Name = "button";
-        button.Text = "Example";
-        button.TextColor = "#FFFFFF";
-        button.BackgroundColor = "#F56CA4";
+        let feedButton = new ButtonMenuItem();
+        feedButton.InitialX = 0;
+        feedButton.InitialY = 3;
+        feedButton.Height = 1;
+        feedButton.Width = 2;
+        feedButton.Name = "feedButton";
+        feedButton.Text = "Eat!";
+        feedButton.TextColor = "#FF0000";
+        feedButton.BackgroundColor = "#000000";
 
-        let checkBox = new CheckBoxMenuItem();
-        checkBox.InitialX = 2;
-        checkBox.InitialY = 3;
-        checkBox.Height = 1;
-        checkBox.Width = 2;
-        checkBox.Name = "checkBox";
-        checkBox.Text = "Checked";
-        checkBox.TextColor = "#FFFFFF";
-        checkBox.FrontColor = "#F56CA4";
-        checkBox.BackgroundColor = "#000000";
-        checkBox.Checked = true;
-        checkBox.UncheckedText = "Unchecked";
+        let drinkButton = new ButtonMenuItem();
+        drinkButton.InitialX = 2;
+        drinkButton.InitialY = 3;
+        drinkButton.Height = 1;
+        drinkButton.Width = 2;
+        drinkButton.Name = "drinkButton";
+        drinkButton.Text = "Drink!";
+        drinkButton.TextColor = "#FF0000";
+        drinkButton.BackgroundColor = "#000000";
 
-        let textBox = new TextBoxMenuItem();
-        textBox.InitialX = 0;
-        textBox.InitialY = 4;
-        textBox.Height = 1;
-        textBox.Width = 2;
-        textBox.Name = "textBox";
-        textBox.Text = "Example";
-        textBox.TextColor = "#F56CA4";
-        textBox.BackgroundColor = "#000000";
-        
+        let tickleButton = new ButtonMenuItem();
+        tickleButton.InitialX = 0;
+        tickleButton.InitialY = 4;
+        tickleButton.Height = 1;
+        tickleButton.Width = menuBuilder.getMaxColumns();
+        tickleButton.Name = "tickleButton";
+        tickleButton.Text = "Tickle me!";
+        tickleButton.TextColor = "#FF0000";
+        tickleButton.BackgroundColor = "#000000";
 
         menuBuilder.createMenuHeader(menuHeader);
         menuBuilder.createPicture(picture);
         menuBuilder.createProgressBar(progress);
-        menuBuilder.createButton(button);
-        menuBuilder.createCheckBox(checkBox);
-        menuBuilder.createTextBox(textBox);
-
+        menuBuilder.createButton(drinkButton);
+        menuBuilder.createButton(feedButton);
+        menuBuilder.createButton(tickleButton);
     }
 
+    /**
+     * This method gets called when the system done processing the speech recognition input.
+     * @param results A stringed version of what the user said.
+     */
     onSpeechRecognitionResults(results: string): void { }
 
+    /**
+     * This method is called when the system received a reply from a previously HTTP request made by the character.
+     * @param response The reply body in a JSON form.
+     */
     onResponseReceived(response: string): void {
         this.actionManager.showMessage(response);
     }
 
+    /**
+     * This method gets called when the system done collecting information about the device location.
+     * @param location The location information collected by the system.
+     */
     onLocationReceived(location: IAliveLocation): void {
         this.actionManager.showMessage("Location: Accuracy: " +
             location.getAccuracy().toString() +
@@ -330,18 +408,35 @@ class AliveClass implements IAliveAgent {
             location.getSpeed().toString());
     }
 
+    /**
+     * This method gets called when the system done collecting information about the user activity.
+     * @param state Information about the user activity.
+     * Possible states: IN_VEHICLE, ON_BICYCLE, ON_FOOT, STILL, TILTING, WALKING, RUNNING, UNKNOWN.
+     */
     onUserActivityStateReceived(state: IAliveUserActivity) {
         this.actionManager.showMessage("UserActivity: State:" + state.getState() + " | Chance:" + state.getChance().toString());
     }
 
+    /**
+     * This method gets called when the system done collecting information about nearby places around the device.
+     * @param places A list of places that are near the device.
+     */
     onPlacesReceived(places: IAlivePlaceLikelihood[]): void {
-        
+
     }
 
+    /**
+     * This method gets called when the system done collecting information about the headphone state.
+     * @param state 1 - the headphones are PLUGGED, 2 - the headphones are UNPLUGGED.
+     */
     onHeadphoneStateReceived(state: number) {
 
     }
 
+    /**
+     * This method gets called when the system done collecting information about the weather in the location of the device.
+     * @param weather Information about the weather.
+     */
     onWeatherReceived(weather: IAliveWeather) {
         this.actionManager.showMessage("Weather: Description:" +
             weather.getWeatherDescription() +
@@ -356,11 +451,19 @@ class AliveClass implements IAliveAgent {
             weather.getTemperature().toString());
     }
 
+    /**
+     * This method will draw a random image to the screen and play a random sound, filtered by the category name.
+     * @param categoryName The name of the category that will be used as a filter.
+     */
     drawAndPlayRandomResourceByCategory(categoryName: string): void {
         this.drawRandomResourceByCategory(categoryName);
         this.playRandomResourceByCategory(categoryName);
     }
 
+    /**
+     * This method will draw a random image to the screen from the character resources.
+     * @param categoryName The name of the category that the image resource belongs to.
+     */
     drawRandomResourceByCategory(categoryName: string): void {
         let image = this.resourceManagerHelper.chooseRandomImage(categoryName);
         if (image != null) {
@@ -368,11 +471,18 @@ class AliveClass implements IAliveAgent {
         }
     }
 
+    /**
+     * This method will play a random sound from the character resources.
+     * @param categoryName The name of the category that the sound resource belongs to.
+     */
     playRandomResourceByCategory(categoryName: string): void {
+        if (this.lastPhoneEventOccurred == categoryName && this.configurationMananger.isSoundPlaying())
+            return;
+
+        this.actionManager.stopSound();
+        this.lastPhoneEventOccurred = categoryName;
         let sound = this.resourceManagerHelper.chooseRandomSound(categoryName);
-        if (sound != null)
-        {
-            this.lastPlaySoundTime = this.currentTime;
+        if (sound != null) {
             this.actionManager.playSound(sound);
         }
     }

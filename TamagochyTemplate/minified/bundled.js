@@ -4,9 +4,15 @@ var AliveClass = (function () {
         this.lastTime = 0;
         this.currentTime = 0;
         this.lastDrawTime = 0;
-        this.lastPlaySoundTime = 0;
     }
+    /**
+     * This method gets called once when the character is being activated by the system.
+     * @param handler An object that allows the code to get reference to the managers.
+     * @param disabledPermissions A list of permissions that the user disabled.
+     */
     AliveClass.prototype.onStart = function (handler, disabledPermissions) {
+        this.lastUserInputTime = 0;
+        this.lastPhoneEventOccurred = "";
         this.actionManager = handler.getActionManager();
         this.resourceManager = handler.getResourceManager();
         this.databaseManager = handler.getDatabaseManager();
@@ -30,6 +36,11 @@ var AliveClass = (function () {
             this.databaseManager.saveObject("health", "100");
         }
     };
+    /**
+     * This method gets called every 250 milliseconds by the system, any logic updates to the state of your character should occur here.
+     * Note: onTick only gets called when the screen is ON.
+     * @param time The current time (in milliseconds) on the device.
+     */
     AliveClass.prototype.onTick = function (time) {
         if (!this.characterManager.isCharacterBeingDragged() && !this.configurationMananger.isScreenOff())
             this.reactToSurfaceChange();
@@ -37,30 +48,34 @@ var AliveClass = (function () {
         if (this.currentTime - this.lastDrawTime > 5000) {
             this.DrawAndPlayRandomNormalResource();
         }
-        if (this.currentTime - this.lastHungerTime > 10000) {
+        if (this.currentTime - this.lastHungerTime > 100000) {
             this.lastHungerTime = this.currentTime;
             this.Hungry();
         }
     };
+    /**
+     * This method have a chance of 85% to draw and play a sound that is related to a category
+         except the eating, drinking and laughing categories.
+     */
     AliveClass.prototype.DrawAndPlayRandomNormalResource = function () {
         var random = Math.random();
         this.currentRandomDrawingCategory = "CHARACTER_ACTIVATION";
         this.actionManager.stopSound();
-        if (random < 0.25) {
-            this.currentRandomDrawingCategory = "reading";
-        }
-        else if (random < 0.50) {
-            this.currentRandomDrawingCategory = "dancing";
-        }
-        else if (random < 0.75) {
-            this.currentRandomDrawingCategory = "singing";
-        }
-        else {
-            this.currentRandomDrawingCategory = "play_guitar";
+        if (random > 0.85) {
+            var allCharacterCategories = this.resourceManager.getAllResourceCategories();
+            allCharacterCategories.splice(allCharacterCategories.indexOf('eating'), 1);
+            allCharacterCategories.splice(allCharacterCategories.indexOf('drinking'), 1);
+            allCharacterCategories.splice(allCharacterCategories.indexOf('laughing'), 1);
+            var randomIndex = Math.floor(Math.random() * (allCharacterCategories.length - 1));
+            this.currentRandomDrawingCategory = allCharacterCategories[randomIndex];
         }
         this.lastDrawTime = this.configurationMananger.getCurrentTime().currentTimeMillis;
         this.drawAndPlayRandomResourceByCategory(this.currentRandomDrawingCategory);
     };
+    /**
+     * This method reduce the health of the character by 10.
+       The health of the character is shown by the progress bar in the character menu.
+     */
     AliveClass.prototype.Hungry = function () {
         this.Hp = this.Hp - 10;
         if (this.Hp < 0)
@@ -71,6 +86,9 @@ var AliveClass = (function () {
         this.databaseManager.saveObject("health", this.Hp.toString());
         this.menuManager.setProperty("healthProgress", "progress", this.Hp.toString());
     };
+    /**
+     * This method will move your character on the screen depending on the surface angle of the phone.
+     */
     AliveClass.prototype.reactToSurfaceChange = function () {
         var speed = -999;
         var category = "";
@@ -84,6 +102,9 @@ var AliveClass = (function () {
             else if (angle > 290 && angle < 350) {
                 speed = angle - 350;
                 category = AgentConstants.ON_FALLING_LEFT;
+            }
+            else {
+                category = AgentConstants.CHARACTER_ACTIVATION;
             }
         }
         else {
@@ -104,6 +125,10 @@ var AliveClass = (function () {
                 category = AgentConstants.ON_FALLING_LEFT;
             }
         }
+        var canChangeMode = this.currentTime - this.lastUserInputTime > 5000
+            && this.currentTime - this.lastDrawTime > 5000;
+        if (!canChangeMode)
+            return;
         if (speed != -999) {
             this.actionManager.stopSound();
             this.drawRandomResourceByCategory(category);
@@ -111,13 +136,24 @@ var AliveClass = (function () {
                 this.playRandomResourceByCategory(category);
             this.actionManager.move(speed, 0, 250);
         }
-        //else {
-        //    this.drawRandomResourceByCategory(AgentConstants.CHARACTER_ACTIVATION);..
-        //}
+        else {
+            this.drawRandomResourceByCategory(AgentConstants.CHARACTER_ACTIVATION);
+        }
     };
+    /**
+     * This method gets called by the system every 1 hour (may be in a different rate depending on the device).
+     * Note: this method only gets called when the screen is OFF.
+     * @param time The current time (in milliseconds) on the device.
+     */
     AliveClass.prototype.onBackgroundTick = function (time) {
         this.onTick(time);
     };
+    /**
+     * This method gets called whenever a phone event (that you registered to) occur on the phone.
+     * @param eventName The name of the event that occurred.
+     * @param jsonedData The data of the event that occurred.
+     * For example, SMS_RECEIVED event will hold data about who sent the SMS, and the SMS content.
+     */
     AliveClass.prototype.onPhoneEventOccurred = function (eventName, jsonedData) {
         if (eventName == "SCREEN_ON") {
             this.menuManager.setProperty("healthProgress", "progress", this.getHealth().toString());
@@ -125,6 +161,13 @@ var AliveClass = (function () {
         this.actionManager.showMessage(eventName + " received");
         this.drawAndPlayRandomResourceByCategory(eventName);
     };
+    /**
+     * This method gets called when the user is holding and moving the image of your character (on screen).
+     * @param oldX The X coordinate in the last tick (Top left).
+     * @param oldY The Y coordinate in the last tick (Top left).
+     * @param newX The X coordinate in the current tick (Top left).
+     * @param newY The Y coordinate in the current tick (Top left).
+     */
     AliveClass.prototype.onMove = function (oldX, oldY, newX, newY) {
         var Xdiff = Math.abs(oldX - newX);
         var Ydiff = Math.abs(oldY - newY);
@@ -145,6 +188,11 @@ var AliveClass = (function () {
             }
         }
     };
+    /**
+     * This method gets called when the user raised his finger off the character image (on screen).
+     * @param currentX The X coordinate of the character image on screen (Top left).
+     * @param currentY The Y coordinate of the character image on the screen (Top left).
+     */
     AliveClass.prototype.onRelease = function (currentX, currentY) {
         this.drawAndPlayRandomResourceByCategory(AgentConstants.ON_RELEASE);
         var screenHeight = this.configurationMananger.getScreenHeight();
@@ -152,16 +200,26 @@ var AliveClass = (function () {
             this.actionManager.move(0, screenHeight - 50, 250);
         }
     };
+    /**
+     * This method gets called whenever the user is holding the character image (on screen).
+     * @param currentX The current X coordinate of the character image (Top left).
+     * @param currentY The current Y coordinate of the character image (Top left).
+     */
     AliveClass.prototype.onPick = function (currentX, currentY) {
         this.drawAndPlayRandomResourceByCategory(AgentConstants.ON_PICK);
     };
-    AliveClass.prototype.onMenuItemSelected = function (itemName) {
-        if (itemName == "feedButton" || itemName == "drinkButton") {
+    /**
+     * This method gets called whenever the user has pressed a view in the character menu.
+     * @param viewName The 'Name' property of the view that was pressed.
+     */
+    AliveClass.prototype.onMenuItemSelected = function (viewName) {
+        if (viewName == "feedButton" || viewName == "drinkButton") {
             this.Hp = this.Hp + 10;
             if (this.Hp > 100)
                 this.Hp = 100;
+            this.lastUserInputTime = this.configurationMananger.getCurrentTime().currentTimeMillis;
             this.lastEatingTime = this.configurationMananger.getCurrentTime().currentTimeMillis;
-            if (itemName == "feedButton") {
+            if (viewName == "feedButton") {
                 this.drawAndPlayRandomResourceByCategory("eating");
             }
             else {
@@ -170,16 +228,23 @@ var AliveClass = (function () {
             this.databaseManager.saveObject("health", this.Hp.toString());
             this.menuManager.setProperty("healthProgress", "progress", this.Hp.toString());
         }
-        else if (itemName == "tickleButton") {
+        else if (viewName == "tickleButton") {
             this.drawAndPlayRandomResourceByCategory("laughing");
         }
     };
+    /**
+     * This method returns the current health of the character from the local database.
+     */
     AliveClass.prototype.getHealth = function () {
         if (this.databaseManager.isObjectExist("health")) {
             return parseInt(this.databaseManager.getObject("health"));
         }
         return 100;
     };
+    /**
+     * This method gets called once just before the onStart method and is where the character menu views are defined.
+     * @param menuBuilder An object that fills the character menu.
+     */
     AliveClass.prototype.onConfigureMenuItems = function (menuBuilder) {
         var menuHeader = new MenuHeader();
         menuHeader.TextColor = "#ffffff";
@@ -198,52 +263,61 @@ var AliveClass = (function () {
         progress.Height = 1;
         progress.Width = menuBuilder.getMaxColumns();
         progress.TextColor = "#FFFFFF";
-        progress.FrontColor = "#F56CA4";
+        progress.FrontColor = "#FF0000";
         progress.BackgroundColor = "#000000";
         progress.Name = "healthProgress";
         progress.Progress = health;
         progress.MaxProgress = 100;
-        var button = new ButtonMenuItem();
-        button.InitialX = 0;
-        button.InitialY = 3;
-        button.Height = 1;
-        button.Width = 2;
-        button.Name = "button";
-        button.Text = "Example";
-        button.TextColor = "#FFFFFF";
-        button.BackgroundColor = "#F56CA4";
-        var checkBox = new CheckBoxMenuItem();
-        checkBox.InitialX = 2;
-        checkBox.InitialY = 3;
-        checkBox.Height = 1;
-        checkBox.Width = 2;
-        checkBox.Name = "checkBox";
-        checkBox.Text = "Checked";
-        checkBox.TextColor = "#FFFFFF";
-        checkBox.FrontColor = "#F56CA4";
-        checkBox.BackgroundColor = "#000000";
-        checkBox.Checked = true;
-        checkBox.UncheckedText = "Unchecked";
-        var textBox = new TextBoxMenuItem();
-        textBox.InitialX = 0;
-        textBox.InitialY = 4;
-        textBox.Height = 1;
-        textBox.Width = 2;
-        textBox.Name = "textBox";
-        textBox.Text = "Example";
-        textBox.TextColor = "#F56CA4";
-        textBox.BackgroundColor = "#000000";
+        var feedButton = new ButtonMenuItem();
+        feedButton.InitialX = 0;
+        feedButton.InitialY = 3;
+        feedButton.Height = 1;
+        feedButton.Width = 2;
+        feedButton.Name = "feedButton";
+        feedButton.Text = "Eat!";
+        feedButton.TextColor = "#FF0000";
+        feedButton.BackgroundColor = "#000000";
+        var drinkButton = new ButtonMenuItem();
+        drinkButton.InitialX = 2;
+        drinkButton.InitialY = 3;
+        drinkButton.Height = 1;
+        drinkButton.Width = 2;
+        drinkButton.Name = "drinkButton";
+        drinkButton.Text = "Drink!";
+        drinkButton.TextColor = "#FF0000";
+        drinkButton.BackgroundColor = "#000000";
+        var tickleButton = new ButtonMenuItem();
+        tickleButton.InitialX = 0;
+        tickleButton.InitialY = 4;
+        tickleButton.Height = 1;
+        tickleButton.Width = menuBuilder.getMaxColumns();
+        tickleButton.Name = "tickleButton";
+        tickleButton.Text = "Tickle me!";
+        tickleButton.TextColor = "#FF0000";
+        tickleButton.BackgroundColor = "#000000";
         menuBuilder.createMenuHeader(menuHeader);
         menuBuilder.createPicture(picture);
         menuBuilder.createProgressBar(progress);
-        menuBuilder.createButton(button);
-        menuBuilder.createCheckBox(checkBox);
-        menuBuilder.createTextBox(textBox);
+        menuBuilder.createButton(drinkButton);
+        menuBuilder.createButton(feedButton);
+        menuBuilder.createButton(tickleButton);
     };
+    /**
+     * This method gets called when the system done processing the speech recognition input.
+     * @param results A stringed version of what the user said.
+     */
     AliveClass.prototype.onSpeechRecognitionResults = function (results) { };
+    /**
+     * This method is called when the system received a reply from a previously HTTP request made by the character.
+     * @param response The reply body in a JSON form.
+     */
     AliveClass.prototype.onResponseReceived = function (response) {
         this.actionManager.showMessage(response);
     };
+    /**
+     * This method gets called when the system done collecting information about the device location.
+     * @param location The location information collected by the system.
+     */
     AliveClass.prototype.onLocationReceived = function (location) {
         this.actionManager.showMessage("Location: Accuracy: " +
             location.getAccuracy().toString() +
@@ -256,13 +330,30 @@ var AliveClass = (function () {
             "| Speed:" +
             location.getSpeed().toString());
     };
+    /**
+     * This method gets called when the system done collecting information about the user activity.
+     * @param state Information about the user activity.
+     * Possible states: IN_VEHICLE, ON_BICYCLE, ON_FOOT, STILL, TILTING, WALKING, RUNNING, UNKNOWN.
+     */
     AliveClass.prototype.onUserActivityStateReceived = function (state) {
         this.actionManager.showMessage("UserActivity: State:" + state.getState() + " | Chance:" + state.getChance().toString());
     };
+    /**
+     * This method gets called when the system done collecting information about nearby places around the device.
+     * @param places A list of places that are near the device.
+     */
     AliveClass.prototype.onPlacesReceived = function (places) {
     };
+    /**
+     * This method gets called when the system done collecting information about the headphone state.
+     * @param state 1 - the headphones are PLUGGED, 2 - the headphones are UNPLUGGED.
+     */
     AliveClass.prototype.onHeadphoneStateReceived = function (state) {
     };
+    /**
+     * This method gets called when the system done collecting information about the weather in the location of the device.
+     * @param weather Information about the weather.
+     */
     AliveClass.prototype.onWeatherReceived = function (weather) {
         this.actionManager.showMessage("Weather: Description:" +
             weather.getWeatherDescription() +
@@ -276,27 +367,42 @@ var AliveClass = (function () {
             " | Temp:" +
             weather.getTemperature().toString());
     };
+    /**
+     * This method will draw a random image to the screen and play a random sound, filtered by the category name.
+     * @param categoryName The name of the category that will be used as a filter.
+     */
     AliveClass.prototype.drawAndPlayRandomResourceByCategory = function (categoryName) {
         this.drawRandomResourceByCategory(categoryName);
         this.playRandomResourceByCategory(categoryName);
     };
+    /**
+     * This method will draw a random image to the screen from the character resources.
+     * @param categoryName The name of the category that the image resource belongs to.
+     */
     AliveClass.prototype.drawRandomResourceByCategory = function (categoryName) {
         var image = this.resourceManagerHelper.chooseRandomImage(categoryName);
         if (image != null) {
             this.actionManager.draw(image, this.resizeRatio, false);
         }
     };
+    /**
+     * This method will play a random sound from the character resources.
+     * @param categoryName The name of the category that the sound resource belongs to.
+     */
     AliveClass.prototype.playRandomResourceByCategory = function (categoryName) {
+        if (this.lastPhoneEventOccurred == categoryName && this.configurationMananger.isSoundPlaying())
+            return;
+        this.actionManager.stopSound();
+        this.lastPhoneEventOccurred = categoryName;
         var sound = this.resourceManagerHelper.chooseRandomSound(categoryName);
         if (sound != null) {
-            this.lastPlaySoundTime = this.currentTime;
             this.actionManager.playSound(sound);
         }
     };
-    // ReSharper disable once InconsistentNaming
-    AliveClass.UNREGISTERED_CATEGORY_RESOURCE = -999;
     return AliveClass;
 }());
+// ReSharper disable once InconsistentNaming
+AliveClass.UNREGISTERED_CATEGORY_RESOURCE = -999;
 //# sourceMappingURL=app.js.map
 var AgentConstants = (function () {
     function AgentConstants() {
@@ -537,14 +643,11 @@ var ResourceManagerHelper = (function () {
 ;
 //# sourceMappingURL=IDatabaseManager.js.map
 //# sourceMappingURL=IManagersHandler.js.map
-//# sourceMappingURL=IMenuBuilder.js.map
 ;
 //# sourceMappingURL=IMenuManager.js.map
 ;
 //# sourceMappingURL=IResourceManager.js.map
 //# sourceMappingURL=IRestManager.js.map
-;
-//# sourceMappingURL=ISpeechManager.js.map
 ;
 //# sourceMappingURL=ISpeechToTextManager.js.map
 ;
@@ -1242,8 +1345,8 @@ var collections;
             };
         };
         return LinkedList;
-    }());
-    collections.LinkedList = LinkedList; // End of linked list 
+    }()); // End of linked list 
+    collections.LinkedList = LinkedList;
     var Dictionary = (function () {
         /**
          * Creates an empty dictionary.
@@ -1415,8 +1518,8 @@ var collections;
             return toret + "\n}";
         };
         return Dictionary;
-    }());
-    collections.Dictionary = Dictionary; // End of dictionary
+    }()); // End of dictionary
+    collections.Dictionary = Dictionary;
     /**
      * This class is used by the LinkedDictionary Internally
      * Has to be a class, not an interface, because it needs to have
@@ -1436,11 +1539,12 @@ var collections;
     var LinkedDictionary = (function (_super) {
         __extends(LinkedDictionary, _super);
         function LinkedDictionary(toStrFunction) {
-            _super.call(this, toStrFunction);
-            this.head = new LinkedDictionaryPair(null, null);
-            this.tail = new LinkedDictionaryPair(null, null);
-            this.head.next = this.tail;
-            this.tail.prev = this.head;
+            var _this = _super.call(this, toStrFunction) || this;
+            _this.head = new LinkedDictionaryPair(null, null);
+            _this.tail = new LinkedDictionaryPair(null, null);
+            _this.head.next = _this.tail;
+            _this.tail.prev = _this.head;
+            return _this;
         }
         /**
          * Inserts the new node to the 'tail' of the list, updating the
@@ -1605,8 +1709,8 @@ var collections;
             }
         };
         return LinkedDictionary;
-    }(Dictionary));
-    collections.LinkedDictionary = LinkedDictionary; // End of LinkedDictionary
+    }(Dictionary)); // End of LinkedDictionary
+    collections.LinkedDictionary = LinkedDictionary;
     // /**
     //  * Returns true if this dictionary is equal to the given dictionary.
     //  * Two dictionaries are equal if they contain the same mappings.
@@ -1785,8 +1889,8 @@ var collections;
             return this.dict.isEmpty();
         };
         return MultiDictionary;
-    }());
-    collections.MultiDictionary = MultiDictionary; // end of multi dictionary 
+    }()); // end of multi dictionary 
+    collections.MultiDictionary = MultiDictionary;
     var Heap = (function () {
         /**
          * Creates an empty Heap.
@@ -2106,8 +2210,8 @@ var collections;
             this.list.forEach(callback);
         };
         return Stack;
-    }());
-    collections.Stack = Stack; // End of stack 
+    }()); // End of stack 
+    collections.Stack = Stack;
     var Queue = (function () {
         /**
          * Creates an empty queue.
@@ -2210,8 +2314,8 @@ var collections;
             this.list.forEach(callback);
         };
         return Queue;
-    }());
-    collections.Queue = Queue; // End of queue
+    }()); // End of queue
+    collections.Queue = Queue;
     var PriorityQueue = (function () {
         /**
          * Creates an empty priority queue.
@@ -2317,8 +2421,8 @@ var collections;
             this.heap.forEach(callback);
         };
         return PriorityQueue;
-    }());
-    collections.PriorityQueue = PriorityQueue; // end of priority queue
+    }()); // end of priority queue
+    collections.PriorityQueue = PriorityQueue;
     var Set = (function () {
         /**
          * Creates an empty set.
@@ -2480,8 +2584,8 @@ var collections;
             return collections.arrays.toString(this.toArray());
         };
         return Set;
-    }());
-    collections.Set = Set; // end of Set
+    }()); // end of Set
+    collections.Set = Set;
     var Bag = (function () {
         /**
          * Creates an empty bag.
@@ -2660,8 +2764,8 @@ var collections;
             this.dictionary.clear();
         };
         return Bag;
-    }());
-    collections.Bag = Bag; // End of bag 
+    }()); // End of bag 
+    collections.Bag = Bag;
     var BSTree = (function () {
         /**
          * Creates an empty binary search tree.
@@ -3055,8 +3159,8 @@ var collections;
             };
         };
         return BSTree;
-    }());
-    collections.BSTree = BSTree; // end of BSTree
+    }()); // end of BSTree
+    collections.BSTree = BSTree;
 })(collections || (collections = {})); // End of module 
 //# sourceMappingURL=collections.js.map
 //# sourceMappingURL=ICalendarEvent.js.map
@@ -3073,49 +3177,54 @@ var BaseMenuItem = (function () {
 var PaintMenuItem = (function (_super) {
     __extends(PaintMenuItem, _super);
     function PaintMenuItem() {
-        _super.apply(this, arguments);
+        return _super !== null && _super.apply(this, arguments) || this;
     }
     return PaintMenuItem;
 }(BaseMenuItem));
 var PictureMenuItem = (function (_super) {
     __extends(PictureMenuItem, _super);
     function PictureMenuItem() {
-        _super.call(this);
-        this.ViewType = ViewType.Picture;
+        var _this = _super.call(this) || this;
+        _this.ViewType = ViewType.Picture;
+        return _this;
     }
-    PictureMenuItem.UseProfilePicture = "Use Profile Picture";
-    PictureMenuItem.UseCoverPicture = "Use Cover Picture";
     return PictureMenuItem;
 }(BaseMenuItem));
+PictureMenuItem.UseProfilePicture = "Use Profile Picture";
+PictureMenuItem.UseCoverPicture = "Use Cover Picture";
 var ButtonMenuItem = (function (_super) {
     __extends(ButtonMenuItem, _super);
     function ButtonMenuItem() {
-        _super.call(this);
-        this.ViewType = ViewType.Button;
+        var _this = _super.call(this) || this;
+        _this.ViewType = ViewType.Button;
+        return _this;
     }
     return ButtonMenuItem;
 }(PaintMenuItem));
 var CheckBoxMenuItem = (function (_super) {
     __extends(CheckBoxMenuItem, _super);
     function CheckBoxMenuItem() {
-        _super.call(this);
-        this.ViewType = ViewType.CheckBox;
+        var _this = _super.call(this) || this;
+        _this.ViewType = ViewType.CheckBox;
+        return _this;
     }
     return CheckBoxMenuItem;
 }(PaintMenuItem));
 var TextBoxMenuItem = (function (_super) {
     __extends(TextBoxMenuItem, _super);
     function TextBoxMenuItem() {
-        _super.call(this);
-        this.ViewType = ViewType.TextBox;
+        var _this = _super.call(this) || this;
+        _this.ViewType = ViewType.TextBox;
+        return _this;
     }
     return TextBoxMenuItem;
 }(PaintMenuItem));
 var ProgressBarMenuItem = (function (_super) {
     __extends(ProgressBarMenuItem, _super);
     function ProgressBarMenuItem() {
-        _super.call(this);
-        this.ViewType = ViewType.ProgressBar;
+        var _this = _super.call(this) || this;
+        _this.ViewType = ViewType.ProgressBar;
+        return _this;
     }
     return ProgressBarMenuItem;
 }(PaintMenuItem));
