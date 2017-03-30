@@ -21,6 +21,7 @@ class AliveClass implements IAliveAgent {
 
     private currentRandomDrawingCategory: string;
     private lastVisabilityChangeTime: number;
+    private sleeping: boolean;
     private visible: boolean;
     private deadPainted: boolean;
     private lastTime: number;
@@ -46,6 +47,7 @@ class AliveClass implements IAliveAgent {
      * @param disabledPermissions A list of permissions that the user disabled.
      */
     onStart(handler: IManagersHandler, disabledPermissions: string[]): void {
+        this.sleeping = false;
         this.lastUserInputTime = 0;
         this.lastPhoneEventOccurred = "";
         this.actionManager = handler.getActionManager();
@@ -74,12 +76,29 @@ class AliveClass implements IAliveAgent {
 
     }
 
+    checkTime(): void {
+        let now = this.configurationMananger.getCurrentTime();
+        if (now.Hour >= 22 || now.Hour < 8) {
+            this.sleeping = true;
+        } else {
+            this.sleeping = false;
+        }
+    }
+
     /**
      * This method gets called every 250 milliseconds by the system, any logic updates to the state of your character should occur here.
      * Note: onTick only gets called when the screen is ON.
      * @param time The current time (in milliseconds) on the device.
      */
     onTick(time: number): void {
+        this.checkTime();
+
+        if (this.sleeping)
+        {
+            this.drawAndPlayRandomResourceByCategory("sleeping");
+            return;
+        }
+
         if (!this.characterManager.isCharacterBeingDragged() && !this.configurationMananger.isScreenOff())
             this.reactToSurfaceChange();
 

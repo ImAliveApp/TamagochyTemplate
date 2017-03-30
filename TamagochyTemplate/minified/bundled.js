@@ -11,6 +11,7 @@ var AliveClass = (function () {
      * @param disabledPermissions A list of permissions that the user disabled.
      */
     AliveClass.prototype.onStart = function (handler, disabledPermissions) {
+        this.sleeping = false;
         this.lastUserInputTime = 0;
         this.lastPhoneEventOccurred = "";
         this.actionManager = handler.getActionManager();
@@ -36,12 +37,26 @@ var AliveClass = (function () {
             this.databaseManager.saveObject("health", "100");
         }
     };
+    AliveClass.prototype.checkTime = function () {
+        var now = this.configurationMananger.getCurrentTime();
+        if (now.Hour >= 22 || now.Hour < 8) {
+            this.sleeping = true;
+        }
+        else {
+            this.sleeping = false;
+        }
+    };
     /**
      * This method gets called every 250 milliseconds by the system, any logic updates to the state of your character should occur here.
      * Note: onTick only gets called when the screen is ON.
      * @param time The current time (in milliseconds) on the device.
      */
     AliveClass.prototype.onTick = function (time) {
+        this.checkTime();
+        if (this.sleeping) {
+            this.drawAndPlayRandomResourceByCategory("sleeping");
+            return;
+        }
         if (!this.characterManager.isCharacterBeingDragged() && !this.configurationMananger.isScreenOff())
             this.reactToSurfaceChange();
         this.currentTime = time;
@@ -52,6 +67,14 @@ var AliveClass = (function () {
             this.lastHungerTime = this.currentTime;
             this.Hungry();
         }
+    };
+    /**
+     * This method gets called by the system every 1 hour (may be in a different rate depending on the device).
+     * Note: this method only gets called when the screen is OFF.
+     * @param time The current time (in milliseconds) on the device.
+     */
+    AliveClass.prototype.onBackgroundTick = function (time) {
+        this.onTick(time);
     };
     /**
      * This method have a chance of 85% to draw and play a sound that is related to a category
@@ -139,14 +162,6 @@ var AliveClass = (function () {
         else {
             this.drawRandomResourceByCategory(AgentConstants.CHARACTER_ACTIVATION);
         }
-    };
-    /**
-     * This method gets called by the system every 1 hour (may be in a different rate depending on the device).
-     * Note: this method only gets called when the screen is OFF.
-     * @param time The current time (in milliseconds) on the device.
-     */
-    AliveClass.prototype.onBackgroundTick = function (time) {
-        this.onTick(time);
     };
     /**
      * This method gets called whenever a phone event (that you registered to) occur on the phone.
@@ -3266,14 +3281,6 @@ var ViewType = (function () {
     return ViewType;
 }());
 //# sourceMappingURL=ViewType.js.map
-//# sourceMappingURL=IBaseMenuItem.js.map
-//# sourceMappingURL=IButtonMenuItem.js.map
-//# sourceMappingURL=ICheckBoxMenuItem.js.map
-//# sourceMappingURL=IMenuHeader.js.map
-//# sourceMappingURL=IPaintMenuItem.js.map
-//# sourceMappingURL=IPictureMenuItem.js.map
-//# sourceMappingURL=IProgressBarMenuItem.js.map
-//# sourceMappingURL=ITextBoxMenuItem.js.map
 //# sourceMappingURL=IAliveLatLng.js.map
 //# sourceMappingURL=IAliveLatLngBounds.js.map
 //# sourceMappingURL=IAliveLocation.js.map
@@ -3920,3 +3927,11 @@ var PlaceType = (function () {
     return PlaceType;
 }());
 //# sourceMappingURL=PlaceType.js.map
+//# sourceMappingURL=IBaseMenuItem.js.map
+//# sourceMappingURL=IButtonMenuItem.js.map
+//# sourceMappingURL=ICheckBoxMenuItem.js.map
+//# sourceMappingURL=IMenuHeader.js.map
+//# sourceMappingURL=IPaintMenuItem.js.map
+//# sourceMappingURL=IPictureMenuItem.js.map
+//# sourceMappingURL=IProgressBarMenuItem.js.map
+//# sourceMappingURL=ITextBoxMenuItem.js.map
