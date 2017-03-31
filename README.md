@@ -25,8 +25,8 @@ In order to use this template, do the following steps:
 Most of the action responds work is done in the "onActionReceived" method:
 ```javascript
     onPhoneEventOccurred(eventName: string, jsonedData: string): void {
-        this.actionManager.showMessage(actionName + " received");
-        this.drawAndPlayRandomResourceByCategory(actionName);
+        this.actionManager.showMessage(eventName + " received");
+        this.drawAndPlayRandomResourceByCategory(eventName);
     }
 ```
 And the character menu work is done in the "onMenuItemSelected" method:
