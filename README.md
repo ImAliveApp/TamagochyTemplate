@@ -23,23 +23,22 @@ In order to use this template, do the following steps:
 
 ### The code:
 Most of the action responds work is done in the "onActionReceived" method:
-```
-
-    onActionReceived(actionName: string, jsonedData: string): void {
-        this.actionManager.showMessage(actionName + " received");
-        this.drawAndPlayRandomResourceByCategory(actionName);
+```javascript
+    onPhoneEventOccurred(eventName: string, jsonedData: string): void {
+        this.actionManager.showMessage(eventName + " received");
+        this.drawAndPlayRandomResourceByCategory(eventName);
     }
 ```
 And the character menu work is done in the "onMenuItemSelected" method:
-```
-    onMenuItemSelected(itemName: string): void {
-        if (itemName == "feedButton" || itemName == "drinkButton") {
+```javascript
+    onMenuItemSelected(viewName: string): void {
+        if (viewName == "feedButton" || viewName == "drinkButton") {
             this.Hp = this.Hp + 10;
             if (this.Hp > 100)
                 this.Hp = 100;
 
             this.lastEatingTime = this.configurationMananger.getCurrentTime().currentTimeMillis;
-            if (itemName == "feedButton") {
+            if (viewName == "feedButton") {
                 this.drawAndPlayRandomResourceByCategory("eating");
             }
             else {
@@ -49,7 +48,7 @@ And the character menu work is done in the "onMenuItemSelected" method:
             this.databaseManager.saveObject("health", this.Hp.toString());
             this.menuManager.setProperty("healthProgress", "progress", this.Hp.toString());
         }
-        else if (itemName == "tickleButton") {
+        else if (viewName == "tickleButton") {
             this.drawAndPlayRandomResourceByCategory("laughing");
         }
     }
