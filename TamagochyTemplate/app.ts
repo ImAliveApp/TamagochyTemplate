@@ -13,10 +13,7 @@ class AliveClass implements IAliveAgent {
     private characterManager: ICharacterManager;
     private menuManager: IMenuManager;
     private configurationMananger: IConfigurationManager;
-    private restManager: IRestManager;
     private managersHandler: IManagersHandler;
-    private awarenessManager: IAwarenessManager;
-
     private resourceManagerHelper: ResourceManagerHelper;
 
     private currentRandomDrawingCategory: string;
@@ -56,8 +53,6 @@ class AliveClass implements IAliveAgent {
         this.characterManager = handler.getCharacterManager();
         this.menuManager = handler.getMenuManager();
         this.configurationMananger = handler.getConfigurationManager();
-        this.restManager = handler.getRestManager();
-        this.awarenessManager = handler.getAwarenessManager();
         this.resourceManagerHelper = new ResourceManagerHelper(this.resourceManager);
         this.actionManager.move(0, this.configurationMananger.getScreenHeight(), 0);
         this.resizeRatio = this.configurationMananger.getMaximalResizeRatio();
