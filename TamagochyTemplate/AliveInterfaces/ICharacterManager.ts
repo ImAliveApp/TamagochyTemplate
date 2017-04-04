@@ -3,4 +3,5 @@
     getCurrentCharacterYPosition(): number;
     isCharacterBeingDragged(): boolean;
     getCurrentDrawingRotation(): number;
+    getBoundingBox(): IRectangle;
 };
