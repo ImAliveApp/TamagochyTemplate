@@ -17,7 +17,7 @@ In order to use this template, do the following steps:
 
 1. Download and build it this project (following [this](https://github.com/hay12396/ImAliveGuide/wiki/How-to:-Build-and-upload-a-character-code) guide)
 
-2. Upload resources to the actions that you wish to register (i.e upload image and sound resources to the POWER_CONNECTED category to attach them to this event)
+2. Upload resources to the actions that you wish to register ([guide](https://youtu.be/UJ3AGZs-1-Y))
 
 3. Publish your character and see the results! (following [this](https://github.com/hay12396/ImAliveGuide/wiki/How-to:-Publish-your-character) guide)
 
