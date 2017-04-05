@@ -22,7 +22,7 @@ In order to use this template, do the following steps:
 3. Publish your character and see the results! (following [this](https://github.com/hay12396/ImAliveGuide/wiki/How-to:-Publish-your-character) guide)
 
 ### The code:
-Most of the action responds work is done in the "onActionReceived" method:
+Most of the action responds work is done in the "onPhoneEventOccurred" method:
 ```javascript
     onPhoneEventOccurred(eventName: string, jsonedData: string): void {
         this.actionManager.showMessage(eventName + " received");
