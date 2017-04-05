@@ -15,11 +15,11 @@ The Tamagochy template have the following actions available in its Character Men
 ### How to use:
 In order to use this template, do the following steps:
 
-1. Download and build it this project (following [this](https://github.com/hay12396/ImAliveGuide/wiki/How-to:-Build-and-upload-a-character-code) guide)
+1. Download and build it this project ([guide](https://github.com/hay12396/ImAliveGuide/wiki/How-to:-Build-and-upload-a-character-code))
 
 2. Upload your assets ([guide](https://youtu.be/UJ3AGZs-1-Y))
 
-3. Publish your character and see the results! (following [this](https://github.com/hay12396/ImAliveGuide/wiki/How-to:-Publish-your-character) guide)
+3. Publish your character and see the results! ([guide](https://github.com/hay12396/ImAliveGuide/wiki/How-to:-Publish-your-character))
 
 ### The code:
 Most of the action responds work is done in the "onPhoneEventOccurred" method:
