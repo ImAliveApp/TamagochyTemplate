@@ -412,8 +412,8 @@ var AliveClass = (function () {
             this.actionManager.playSound(sound);
         }
     };
-    // ReSharper disable once InconsistentNaming
-    AliveClass.UNREGISTERED_CATEGORY_RESOURCE = -999;
     return AliveClass;
 }());
+// ReSharper disable once InconsistentNaming
+AliveClass.UNREGISTERED_CATEGORY_RESOURCE = -999;
 //# sourceMappingURL=app.js.map

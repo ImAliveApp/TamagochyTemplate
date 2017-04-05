@@ -11,49 +11,54 @@ var BaseMenuItem = (function () {
 var PaintMenuItem = (function (_super) {
     __extends(PaintMenuItem, _super);
     function PaintMenuItem() {
-        _super.apply(this, arguments);
+        return _super !== null && _super.apply(this, arguments) || this;
     }
     return PaintMenuItem;
 }(BaseMenuItem));
 var PictureMenuItem = (function (_super) {
     __extends(PictureMenuItem, _super);
     function PictureMenuItem() {
-        _super.call(this);
-        this.ViewType = ViewType.Picture;
+        var _this = _super.call(this) || this;
+        _this.ViewType = ViewType.Picture;
+        return _this;
     }
-    PictureMenuItem.UseProfilePicture = "Use Profile Picture";
-    PictureMenuItem.UseCoverPicture = "Use Cover Picture";
     return PictureMenuItem;
 }(BaseMenuItem));
+PictureMenuItem.UseProfilePicture = "Use Profile Picture";
+PictureMenuItem.UseCoverPicture = "Use Cover Picture";
 var ButtonMenuItem = (function (_super) {
     __extends(ButtonMenuItem, _super);
     function ButtonMenuItem() {
-        _super.call(this);
-        this.ViewType = ViewType.Button;
+        var _this = _super.call(this) || this;
+        _this.ViewType = ViewType.Button;
+        return _this;
     }
     return ButtonMenuItem;
 }(PaintMenuItem));
 var CheckBoxMenuItem = (function (_super) {
     __extends(CheckBoxMenuItem, _super);
     function CheckBoxMenuItem() {
-        _super.call(this);
-        this.ViewType = ViewType.CheckBox;
+        var _this = _super.call(this) || this;
+        _this.ViewType = ViewType.CheckBox;
+        return _this;
     }
     return CheckBoxMenuItem;
 }(PaintMenuItem));
 var TextBoxMenuItem = (function (_super) {
     __extends(TextBoxMenuItem, _super);
     function TextBoxMenuItem() {
-        _super.call(this);
-        this.ViewType = ViewType.TextBox;
+        var _this = _super.call(this) || this;
+        _this.ViewType = ViewType.TextBox;
+        return _this;
     }
     return TextBoxMenuItem;
 }(PaintMenuItem));
 var ProgressBarMenuItem = (function (_super) {
     __extends(ProgressBarMenuItem, _super);
     function ProgressBarMenuItem() {
-        _super.call(this);
-        this.ViewType = ViewType.ProgressBar;
+        var _this = _super.call(this) || this;
+        _this.ViewType = ViewType.ProgressBar;
+        return _this;
     }
     return ProgressBarMenuItem;
 }(PaintMenuItem));
