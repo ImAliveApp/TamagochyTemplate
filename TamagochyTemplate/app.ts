@@ -229,7 +229,7 @@ class AliveClass implements IAliveAgent {
             this.menuManager.setProperty("healthProgress", "progress", this.getHealth().toString());
         }
 
-        this.actionManager.showMessage(eventName + " received");
+        this.actionManager.showMessage(eventName + " received", "#000000", "#eeeeee", 2000);
         this.drawAndPlayRandomResourceByCategory(eventName);
     }
 
@@ -402,7 +402,7 @@ class AliveClass implements IAliveAgent {
      * @param response The reply body in a JSON form.
      */
     onResponseReceived(response: string): void {
-        this.actionManager.showMessage(response);
+        this.actionManager.showMessage(response, "#000000", "#eeeeee", 2000);
     }
 
     /**
@@ -419,7 +419,7 @@ class AliveClass implements IAliveAgent {
             "| Longitude:" +
             location.getLongitude().toString() +
             "| Speed:" +
-            location.getSpeed().toString());
+            location.getSpeed().toString(), "#000000", "#eeeeee", 2000);
     }
 
     /**
@@ -428,7 +428,7 @@ class AliveClass implements IAliveAgent {
      * Possible states: IN_VEHICLE, ON_BICYCLE, ON_FOOT, STILL, TILTING, WALKING, RUNNING, UNKNOWN.
      */
     onUserActivityStateReceived(state: IAliveUserActivity) {
-        this.actionManager.showMessage("UserActivity: State:" + state.getState() + " | Chance:" + state.getChance().toString());
+        this.actionManager.showMessage("UserActivity: State:" + state.getState() + " | Chance:" + state.getChance().toString(), "#000000", "#eeeeee", 2000);
     }
 
     /**
@@ -462,7 +462,7 @@ class AliveClass implements IAliveAgent {
             " | Humidity:" +
             weather.getHumidity().toString() +
             " | Temp:" +
-            weather.getTemperature().toString());
+            weather.getTemperature().toString(), "#000000", "#eeeeee", 2000);
     }
 
     /**

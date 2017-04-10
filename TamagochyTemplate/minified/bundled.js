@@ -171,7 +171,7 @@ var AliveClass = (function () {
         if (eventName == "SCREEN_ON") {
             this.menuManager.setProperty("healthProgress", "progress", this.getHealth().toString());
         }
-        this.actionManager.showMessage(eventName + " received");
+        this.actionManager.showMessage(eventName + " received", "#000000", "#eeeeee", 2000);
         this.drawAndPlayRandomResourceByCategory(eventName);
     };
     /**
@@ -325,7 +325,7 @@ var AliveClass = (function () {
      * @param response The reply body in a JSON form.
      */
     AliveClass.prototype.onResponseReceived = function (response) {
-        this.actionManager.showMessage(response);
+        this.actionManager.showMessage(response, "#000000", "#eeeeee", 2000);
     };
     /**
      * This method gets called when the system done collecting information about the device location.
@@ -341,7 +341,7 @@ var AliveClass = (function () {
             "| Longitude:" +
             location.getLongitude().toString() +
             "| Speed:" +
-            location.getSpeed().toString());
+            location.getSpeed().toString(), "#000000", "#eeeeee", 2000);
     };
     /**
      * This method gets called when the system done collecting information about the user activity.
@@ -349,7 +349,7 @@ var AliveClass = (function () {
      * Possible states: IN_VEHICLE, ON_BICYCLE, ON_FOOT, STILL, TILTING, WALKING, RUNNING, UNKNOWN.
      */
     AliveClass.prototype.onUserActivityStateReceived = function (state) {
-        this.actionManager.showMessage("UserActivity: State:" + state.getState() + " | Chance:" + state.getChance().toString());
+        this.actionManager.showMessage("UserActivity: State:" + state.getState() + " | Chance:" + state.getChance().toString(), "#000000", "#eeeeee", 2000);
     };
     /**
      * This method gets called when the system done collecting information about nearby places around the device.
@@ -378,7 +378,7 @@ var AliveClass = (function () {
             " | Humidity:" +
             weather.getHumidity().toString() +
             " | Temp:" +
-            weather.getTemperature().toString());
+            weather.getTemperature().toString(), "#000000", "#eeeeee", 2000);
     };
     /**
      * This method will draw a random image to the screen and play a random sound, filtered by the category name.
@@ -566,11 +566,8 @@ var AliveSmsData = (function () {
     return AliveSmsData;
 }());
 //# sourceMappingURL=AliveSmsData.js.map
-//# sourceMappingURL=IAliveLocation.js.map
 ;
 //# sourceMappingURL=IAliveResource.js.map
-//# sourceMappingURL=IAliveUserActivity.js.map
-//# sourceMappingURL=IAliveWeather.js.map
 //# sourceMappingURL=ICurrentTime.js.map
 //# sourceMappingURL=IMenuBuilder.js.map
 //# sourceMappingURL=IRectangle.js.map

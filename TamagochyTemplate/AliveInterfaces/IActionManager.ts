@@ -1,5 +1,6 @@
 ﻿interface IActionManager {
-    showMessage(message: string): void;
+    showMessage(message: string, hexTextColor: string, hexBackgroundColor: string, duration: number): void;
+    showSystemMessage(message: string);
     playSound(resourceName: string): void;
     stopSound(): void;
     move(x: number, y: number, duration: number): void;
