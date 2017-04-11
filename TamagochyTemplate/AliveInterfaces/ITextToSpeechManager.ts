@@ -15,12 +15,14 @@
 
     /**
      * This method will set the pitch of the text to speech service.
+     * 1.0 is the normal pitch, lower values lower the tone of the synthesized voice, greater values increase it.
      * @param pitch The pitch to set.
      */
     setPitch(pitch: number): void;
 
     /**
      * This method will set the speech rate of the text to speech service.
+     * 1.0 is the normal speech rate, lower values slow down the speech (0.5 is half the normal speech rate), greater values accelerate it (2.0 is twice the normal speech rate).
      * @param speechRate The speech rate to set.
      */
     setSpeechRate(speechRate: number): void;
