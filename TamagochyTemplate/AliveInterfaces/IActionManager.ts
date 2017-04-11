@@ -18,8 +18,9 @@
     /**
      * This method will play a sound.
      * @param resourceName The name of the sound to play.
+     * @param loop True if you wish to play this sound in a loop (untill you play other sound or use the stopSound method).
      */
-    playSound(resourceName: string): void;
+    playSound(resourceName: string, loop: boolean): void;
 
     /**
      * This method will stop the sound in the backgound.
