@@ -409,7 +409,7 @@ var AliveClass = (function () {
         this.lastPhoneEventOccurred = categoryName;
         var sound = this.resourceManagerHelper.chooseRandomSound(categoryName);
         if (sound != null) {
-            this.actionManager.playSound(sound);
+            this.actionManager.playSound(sound, false);
         }
     };
     return AliveClass;

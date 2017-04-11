@@ -497,7 +497,7 @@ class AliveClass implements IAliveAgent {
         this.lastPhoneEventOccurred = categoryName;
         let sound = this.resourceManagerHelper.chooseRandomSound(categoryName);
         if (sound != null) {
-            this.actionManager.playSound(sound);
+            this.actionManager.playSound(sound, false);
         }
     }
 }
