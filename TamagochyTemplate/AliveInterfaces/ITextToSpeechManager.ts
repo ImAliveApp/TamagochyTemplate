@@ -2,6 +2,7 @@
 
     /**
      * This method will set the text to speech service language to that language.
+     * Once the language is set, the system will do its best to set a voice of that language aswell, so there is no need to set the voice yourself.
      * @param language The language to set.
      */
     setLanguage(language: string): void;
