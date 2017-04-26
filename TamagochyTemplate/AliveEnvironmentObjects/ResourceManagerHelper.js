@@ -44,18 +44,18 @@ var ResourceManagerHelper = (function () {
         }
     };
     ResourceManagerHelper.prototype.chooseRandomImage = function (categoryName) {
-        var randomIndex = this.getRandomIndex(categoryName, this.imageResources.getValue(categoryName));
+        var randomIndex = this.getRandomIndex(this.imageResources.getValue(categoryName));
         if (randomIndex < 0)
             return null;
         return this.imageResources.getValue(categoryName)[randomIndex].getResourceName();
     };
     ResourceManagerHelper.prototype.chooseRandomSound = function (categoryName) {
-        var randomIndex = this.getRandomIndex(categoryName, this.soundResources.getValue(categoryName));
+        var randomIndex = this.getRandomIndex(this.soundResources.getValue(categoryName));
         if (randomIndex < 0)
             return null;
         return this.soundResources.getValue(categoryName)[randomIndex].getResourceName();
     };
-    ResourceManagerHelper.prototype.getRandomIndex = function (state, list) {
+    ResourceManagerHelper.prototype.getRandomIndex = function (list) {
         var index = -1;
         if (list == null)
             return index;

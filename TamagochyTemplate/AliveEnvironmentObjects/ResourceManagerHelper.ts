@@ -1,4 +1,4 @@
-﻿class ResourceManagerHelper{
+﻿class ResourceManagerHelper {
     private resourceManager: IResourceManager;
 
     protected imageResources: collections.Dictionary<string, Array<IAliveResource>>;
@@ -12,7 +12,7 @@
         this.setupResourceMap();
     }
 
-    setupResourceMap(): void {
+    private setupResourceMap(): void {
         this.soundResources = new collections.Dictionary<string, Array<IAliveResource>>();
         this.imageResources = new collections.Dictionary<string, Array<IAliveResource>>();
         this.soundList = new Array<IAliveResource>();
@@ -58,18 +58,18 @@
     }
 
     public chooseRandomImage(categoryName: string): string {
-        let randomIndex = this.getRandomIndex(categoryName, this.imageResources.getValue(categoryName));
+        let randomIndex = this.getRandomIndex(this.imageResources.getValue(categoryName));
         if (randomIndex < 0) return null;
         return this.imageResources.getValue(categoryName)[randomIndex].getResourceName();
     }
 
     public chooseRandomSound(categoryName: string): string {
-        let randomIndex = this.getRandomIndex(categoryName, this.soundResources.getValue(categoryName));
+        let randomIndex = this.getRandomIndex(this.soundResources.getValue(categoryName));
         if (randomIndex < 0) return null;
         return this.soundResources.getValue(categoryName)[randomIndex].getResourceName();
     }
 
-    private getRandomIndex(state: string, list: Array<IAliveResource>): number {
+    private getRandomIndex(list: Array<IAliveResource>): number {
         let index = -1;
         if (list == null)
             return index;
@@ -77,5 +77,4 @@
         index = Math.floor(Math.random() * list.length);
         return index;
     }
-
 }
