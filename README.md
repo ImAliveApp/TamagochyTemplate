@@ -60,4 +60,4 @@ of the device being plugged to a power supply, this method will be called with t
 If you have upload resources to the website under the "POWER_CONNECTED" category, a random image and a random sound will be picked and used
 by the "drawAndPlayRandomResourceByCategory" method.
 
-**Note**: you must [register](http://linkToActionRegisterGuide.com) to a phone action in order to be notified when it occures.
+**Note**: you must [register](https://youtu.be/HGkpn2y04B8) to a phone action in order to be notified when it occures.
