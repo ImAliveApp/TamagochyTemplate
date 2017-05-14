@@ -56,6 +56,8 @@ C:\Users\Hay Zohar\Documents\GitHub\TamagochyTemplate\TamagochyTemplate\AliveEnv
 C:\Users\Hay Zohar\Documents\GitHub\TamagochyTemplate\TamagochyTemplate\AliveEnvironmentObjects\Places\IAlivePlaceLikelihood.js.map
 C:\Users\Hay Zohar\Documents\GitHub\TamagochyTemplate\TamagochyTemplate\AliveEnvironmentObjects\Places\PlaceType.js
 C:\Users\Hay Zohar\Documents\GitHub\TamagochyTemplate\TamagochyTemplate\AliveEnvironmentObjects\Places\PlaceType.js.map
+C:\Users\Hay Zohar\Documents\GitHub\TamagochyTemplate\TamagochyTemplate\AliveEnvironmentObjects\Minigame\Minigame.js
+C:\Users\Hay Zohar\Documents\GitHub\TamagochyTemplate\TamagochyTemplate\AliveEnvironmentObjects\Minigame\Minigame.js.map
 C:\Users\Hay Zohar\Documents\GitHub\TamagochyTemplate\TamagochyTemplate\AliveEnvironmentObjects\MenuInterfaces\IBaseMenuItem.js
 C:\Users\Hay Zohar\Documents\GitHub\TamagochyTemplate\TamagochyTemplate\AliveEnvironmentObjects\MenuInterfaces\IBaseMenuItem.js.map
 C:\Users\Hay Zohar\Documents\GitHub\TamagochyTemplate\TamagochyTemplate\AliveEnvironmentObjects\MenuInterfaces\IButtonMenuItem.js

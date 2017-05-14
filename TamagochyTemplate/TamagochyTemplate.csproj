@@ -50,6 +50,7 @@
     <TypeScriptCompile Include="AliveEnvironmentObjects\MenuInterfaces\IPictureMenuItem.ts" />
     <TypeScriptCompile Include="AliveEnvironmentObjects\MenuInterfaces\IProgressBarMenuItem.ts" />
     <TypeScriptCompile Include="AliveEnvironmentObjects\MenuInterfaces\ITextBoxMenuItem.ts" />
+    <TypeScriptCompile Include="AliveEnvironmentObjects\Minigame\Minigame.ts" />
     <TypeScriptCompile Include="AliveEnvironmentObjects\Places\IAliveLatLng.ts" />
     <TypeScriptCompile Include="AliveEnvironmentObjects\Places\IAliveLatLngBounds.ts" />
     <TypeScriptCompile Include="AliveEnvironmentObjects\Places\IAlivePlace.ts" />

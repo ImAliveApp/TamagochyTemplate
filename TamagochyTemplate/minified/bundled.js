@@ -6,20 +6,24 @@ var AliveClass = (function () {
     }
     AliveClass.prototype.onStart = function (handler, disabledPermissions) {
         this.sleeping = false;
+        this.menuInitialized = false;
+        this.playingMiniGame = false;
         this.lastUserInputTime = 0;
         this.lastPhoneEventOccurred = "";
+        this.managersHandler = handler;
         this.actionManager = handler.getActionManager();
         this.resourceManager = handler.getResourceManager();
         this.databaseManager = handler.getDatabaseManager();
         this.characterManager = handler.getCharacterManager();
         this.menuManager = handler.getMenuManager();
-        this.configurationMananger = handler.getConfigurationManager();
+        this.configurationManager = handler.getConfigurationManager();
         this.resourceManagerHelper = new ResourceManagerHelper(this.resourceManager);
-        this.actionManager.move(0, this.configurationMananger.getScreenHeight(), 0);
-        this.resizeRatio = this.configurationMananger.getMaximalResizeRatio();
+        this.actionManager.move(0, this.configurationManager.getScreenHeight(), 0);
+        this.resizeRatio = this.configurationManager.getMaximalResizeRatio();
         this.drawAndPlayRandomResourceByCategory(AgentConstants.CHARACTER_ACTIVATION);
-        this.lastHungerTime = this.configurationMananger.getCurrentTime().currentTimeMillis;
+        this.lastHungerTime = this.configurationManager.getCurrentTime().currentTimeMillis;
         this.lastEatingTime = 0;
+        this.lastPlayGameClick = 0;
         if (this.databaseManager.isObjectExist("health")) {
             this.Hp = parseInt(this.databaseManager.getObject("health"));
             this.menuManager.setProperty("healthProgress", "progress", this.Hp.toString());
@@ -28,9 +32,32 @@ var AliveClass = (function () {
             this.Hp = 100;
             this.databaseManager.saveObject("health", "100");
         }
+        this.playerWinMessages = ["You are very good at this game :) \nwe got another carrot :D", "Hm, i need more training xD \nwe got another carrot :D",
+            "how did you win?!? \nwe got another carrot :D", "Yay! nice job! \nwe got another carrot :D",
+            "Sweet! i knew you were training :D \nwe got another carrot :D"];
+        this.playerLoseMessages = ["Num, that was easy! :P", "Nana Banana", "Nice round, but i still won :D",
+            "Hahaha, maybe next time!", "I'm much better than you! :P"];
+        this.cryingMessages = ["Feed me please! :(", "I'm so hungry :(", "There is nothing to eat or drink :'(",
+            "You don't love me anymore! :( :(", "I thought we were friends! :'("];
+    };
+    AliveClass.prototype.initializeCounts = function () {
+        var foodCount = this.databaseManager.getObject("foodCount");
+        var drinkCount = this.databaseManager.getObject("drinkCount");
+        if (foodCount == null) {
+            this.databaseManager.saveObject("foodCount", "5");
+            foodCount = "5";
+        }
+        if (drinkCount == null) {
+            this.databaseManager.saveObject("drinkCount", "5");
+            drinkCount = "5";
+        }
+        this.foodCount = parseInt(foodCount);
+        this.drinkCount = parseInt(drinkCount);
+        this.menuManager.setProperty("foodCount", "text", this.foodCount + " food left");
+        this.menuManager.setProperty("drinkCount", "text", this.drinkCount + " drinks left");
     };
     AliveClass.prototype.checkTime = function () {
-        var now = this.configurationMananger.getCurrentTime();
+        var now = this.configurationManager.getCurrentTime();
         if (now.Hour >= 22 || now.Hour < 8) {
             this.sleeping = true;
         }
@@ -39,12 +66,21 @@ var AliveClass = (function () {
         }
     };
     AliveClass.prototype.onTick = function (time) {
+        this.currentTime = time;
+        if (this.playingMiniGame) {
+            this.miniGame.onTick(time);
+            return;
+        }
         this.checkTime();
         if (this.sleeping) {
             this.drawAndPlayRandomResourceByCategory("sleeping");
             return;
         }
-        if (!this.characterManager.isCharacterBeingDragged() && !this.configurationMananger.isScreenOff())
+        if (!this.menuInitialized) {
+            this.menuInitialized = true;
+            this.initializeCounts();
+        }
+        if (!this.characterManager.isCharacterBeingDragged() && !this.configurationManager.isScreenOff())
             this.reactToSurfaceChange();
         this.currentTime = time;
         if (this.currentTime - this.lastDrawTime > 5000) {
@@ -54,6 +90,12 @@ var AliveClass = (function () {
             this.lastHungerTime = this.currentTime;
             this.Hungry();
         }
+    };
+    AliveClass.prototype.updateCounts = function () {
+        this.menuManager.setProperty("foodCount", "text", this.foodCount + " food left");
+        this.menuManager.setProperty("drinkCount", "text", this.drinkCount + " drinks left");
+        this.databaseManager.saveObject("foodCount", this.foodCount.toString());
+        this.databaseManager.saveObject("drinkCount", this.drinkCount.toString());
     };
     AliveClass.prototype.onBackgroundTick = function (time) {
         this.onTick(time);
@@ -70,7 +112,7 @@ var AliveClass = (function () {
             var randomIndex = Math.floor(Math.random() * (allCharacterCategories.length - 1));
             this.currentRandomDrawingCategory = allCharacterCategories[randomIndex];
         }
-        this.lastDrawTime = this.configurationMananger.getCurrentTime().currentTimeMillis;
+        this.lastDrawTime = this.configurationManager.getCurrentTime().currentTimeMillis;
         this.drawAndPlayRandomResourceByCategory(this.currentRandomDrawingCategory);
     };
     AliveClass.prototype.Hungry = function () {
@@ -79,6 +121,8 @@ var AliveClass = (function () {
             this.Hp = 0;
         if (this.Hp < 50) {
             this.drawAndPlayRandomResourceByCategory("crying");
+            var messageIndex = Math.floor(Math.random() * 4);
+            this.actionManager.showMessage(this.cryingMessages[messageIndex], "#FF0000", "#eeeeee", 2000);
         }
         this.databaseManager.saveObject("health", this.Hp.toString());
         this.menuManager.setProperty("healthProgress", "progress", this.Hp.toString());
@@ -86,8 +130,8 @@ var AliveClass = (function () {
     AliveClass.prototype.reactToSurfaceChange = function () {
         var speed = -999;
         var category = "";
-        var angle = this.configurationMananger.getCurrentSurfaceAngle();
-        var orientation = this.configurationMananger.getScreenOrientation();
+        var angle = this.configurationManager.getCurrentSurfaceAngle();
+        var orientation = this.configurationManager.getScreenOrientation();
         if (orientation == AgentConstants.ORIENTATION_PORTRAIT) {
             if (angle > 10 && angle < 70) {
                 speed = angle - 10;
@@ -135,10 +179,15 @@ var AliveClass = (function () {
         }
     };
     AliveClass.prototype.onPhoneEventOccurred = function (eventName, jsonedData) {
+        eventName = eventName.toUpperCase();
         if (eventName == "SCREEN_ON") {
             this.menuManager.setProperty("healthProgress", "progress", this.getHealth().toString());
         }
-        this.actionManager.showMessage(eventName + " received", "#000000", "#eeeeee", 2000);
+        else if (eventName == "CHARACTER_ACTIVATION") {
+            this.actionManager.showMessage("Hi there! :D", "#00FF00", "#eeeeee", 2000);
+        }
+        else
+            this.actionManager.showMessage(eventName + " received", "#000000", "#eeeeee", 2000);
         this.drawAndPlayRandomResourceByCategory(eventName);
     };
     AliveClass.prototype.onMove = function (oldX, oldY, newX, newY) {
@@ -162,34 +211,113 @@ var AliveClass = (function () {
         }
     };
     AliveClass.prototype.onRelease = function (currentX, currentY) {
-        this.drawAndPlayRandomResourceByCategory(AgentConstants.ON_RELEASE);
-        var screenHeight = this.configurationMananger.getScreenHeight();
+        if (this.playingMiniGame)
+            return;
+        var screenHeight = this.configurationManager.getScreenHeight();
         if (currentY < screenHeight - 50) {
             this.actionManager.move(0, screenHeight - 50, 250);
         }
+        this.drawAndPlayRandomResourceByCategory(AgentConstants.ON_RELEASE);
     };
     AliveClass.prototype.onPick = function (currentX, currentY) {
+        if (this.playingMiniGame) {
+            this.miniGame.onEventOccured("touch");
+            return;
+        }
         this.drawAndPlayRandomResourceByCategory(AgentConstants.ON_PICK);
     };
     AliveClass.prototype.onMenuItemSelected = function (viewName) {
+        this.lastInteractionTime = this.currentTime;
         if (viewName == "feedButton" || viewName == "drinkButton") {
-            this.Hp = this.Hp + 10;
-            if (this.Hp > 100)
-                this.Hp = 100;
-            this.lastUserInputTime = this.configurationMananger.getCurrentTime().currentTimeMillis;
-            this.lastEatingTime = this.configurationMananger.getCurrentTime().currentTimeMillis;
+            if (this.playingMiniGame)
+                return;
+            this.lastUserInputTime = this.configurationManager.getCurrentTime().currentTimeMillis;
+            this.lastEatingTime = this.configurationManager.getCurrentTime().currentTimeMillis;
             if (viewName == "feedButton") {
+                if (this.foodCount <= 0) {
+                    this.actionManager.showMessage("You have no food, please play with me to earn some", "#000000", "#aaaaaa", 2000);
+                    return;
+                }
+                this.foodCount -= 1;
                 this.drawAndPlayRandomResourceByCategory("eating");
             }
             else {
+                if (this.drinkCount <= 0) {
+                    this.actionManager.showMessage("You have no food, please play with me to earn some", "#000000", "#aaaaaa", 2000);
+                    return;
+                }
+                this.drinkCount -= 1;
                 this.drawAndPlayRandomResourceByCategory("drinking");
             }
+            this.updateCounts();
+            this.Hp = this.Hp + 10;
+            if (this.Hp > 100)
+                this.Hp = 100;
             this.databaseManager.saveObject("health", this.Hp.toString());
             this.menuManager.setProperty("healthProgress", "progress", this.Hp.toString());
         }
-        else if (viewName == "tickleButton") {
-            this.drawAndPlayRandomResourceByCategory("laughing");
+        else if (viewName == "playButton") {
+            if (this.playingMiniGame) {
+                this.miniGame.onEventOccured("stop");
+            }
+            else {
+                var now = this.currentTime;
+                if (now - this.lastPlayGameClick < 2000)
+                    return;
+                this.lastPlayGameClick = now;
+                this.playRandomMiniGame(now);
+            }
         }
+    };
+    AliveClass.prototype.playRandomMiniGame = function (currentTime) {
+        var _this = this;
+        if (this.playingMiniGame)
+            return;
+        if (currentTime < this.noPlayPenaltyTime) {
+            this.actionManager.showMessage("I said that i don't want to play right now!!", "#4C4D4F", "#ffffff", 2000);
+            this.noPlayPenaltyTime = currentTime + 10000;
+            return;
+        }
+        if (Math.random() > 0.6) {
+            this.actionManager.showMessage("I don't want to play right now..", "#4C4D4F", "#ffffff", 2000);
+            this.noPlayPenaltyTime = currentTime + 10000;
+            return;
+        }
+        this.menuManager.setProperty("healthLabel", "text", "Game:");
+        this.menuManager.setProperty("playButton", "Text", "Surrender");
+        this.playingMiniGame = true;
+        var randomNumber = Math.random() * 100;
+        if (randomNumber <= 50) {
+            this.miniGame = new CatchMiniGame(this.managersHandler, this.resourceManagerHelper, function (playerWon) {
+                _this.miniGameOver(playerWon);
+            });
+        }
+        else {
+            this.miniGame = new HideAndSeekMiniGame(this.managersHandler, function (playerWon) {
+                _this.miniGameOver(playerWon);
+            });
+        }
+        this.miniGame.onStart(this.configurationManager.getCurrentTime().currentTimeMillis);
+    };
+    AliveClass.prototype.miniGameOver = function (playerWon) {
+        this.actionManager.move(-this.configurationManager.getScreenWidth(), this.configurationManager.getScreenHeight(), 20);
+        this.playingMiniGame = false;
+        var messageIndex = Math.floor(Math.random() * 4);
+        this.actionManager.animateAlpha(1, 0);
+        this.drawAndPlayRandomResourceByCategory("laughing");
+        if (playerWon) {
+            this.foodCount += 1;
+            this.drinkCount += 1;
+            this.updateCounts();
+            this.actionManager.showMessage(this.playerWinMessages[messageIndex], "#91CA63", "#ffffff", 5000);
+        }
+        else {
+            this.actionManager.showMessage(this.playerLoseMessages[messageIndex], "#EC2027", "#ffffff", 5000);
+        }
+        this.menuManager.setProperty("playButton", "Text", "Let's play!");
+        this.menuManager.setProperty("healthLabel", "text", "Health:");
+        this.menuManager.setProperty("healthProgress", "progress", this.Hp.toString());
+        this.menuManager.setProperty("healthProgress", "frontcolor", "#FF0000");
     };
     AliveClass.prototype.getHealth = function () {
         if (this.databaseManager.isObjectExist("health")) {
@@ -209,11 +337,20 @@ var AliveClass = (function () {
         picture.Name = "cover";
         picture.PictureResourceName = PictureMenuItem.UseCoverPicture;
         var health = this.getHealth();
+        var healthLabel = new TextBoxMenuItem();
+        healthLabel.InitialX = 0;
+        healthLabel.InitialY = 2;
+        healthLabel.Height = 1;
+        healthLabel.Width = 1;
+        healthLabel.Name = "healthLabel";
+        healthLabel.Text = "Health:";
+        healthLabel.TextColor = "#FF0000";
+        healthLabel.BackgroundColor = "#000000";
         var progress = new ProgressBarMenuItem();
-        progress.InitialX = 0;
+        progress.InitialX = 1;
         progress.InitialY = 2;
         progress.Height = 1;
-        progress.Width = menuBuilder.getMaxColumns();
+        progress.Width = 3;
         progress.TextColor = "#FFFFFF";
         progress.FrontColor = "#FF0000";
         progress.BackgroundColor = "#000000";
@@ -224,35 +361,56 @@ var AliveClass = (function () {
         feedButton.InitialX = 0;
         feedButton.InitialY = 3;
         feedButton.Height = 1;
-        feedButton.Width = 2;
+        feedButton.Width = 1;
         feedButton.Name = "feedButton";
-        feedButton.Text = "Eat!";
+        feedButton.Text = "Feed:";
         feedButton.TextColor = "#FF0000";
         feedButton.BackgroundColor = "#000000";
+        var foodCount = new TextBoxMenuItem();
+        foodCount.InitialX = 1;
+        foodCount.InitialY = 3;
+        foodCount.Height = 1;
+        foodCount.Width = 3;
+        foodCount.Name = "foodCount";
+        foodCount.Text = "5 food left";
+        foodCount.TextColor = "#FF0000";
+        foodCount.BackgroundColor = "#000000";
         var drinkButton = new ButtonMenuItem();
-        drinkButton.InitialX = 2;
-        drinkButton.InitialY = 3;
+        drinkButton.InitialX = 0;
+        drinkButton.InitialY = 4;
         drinkButton.Height = 1;
-        drinkButton.Width = 2;
+        drinkButton.Width = 1;
         drinkButton.Name = "drinkButton";
-        drinkButton.Text = "Drink!";
+        drinkButton.Text = "Drink:";
         drinkButton.TextColor = "#FF0000";
         drinkButton.BackgroundColor = "#000000";
-        var tickleButton = new ButtonMenuItem();
-        tickleButton.InitialX = 0;
-        tickleButton.InitialY = 4;
-        tickleButton.Height = 1;
-        tickleButton.Width = menuBuilder.getMaxColumns();
-        tickleButton.Name = "tickleButton";
-        tickleButton.Text = "Tickle me!";
-        tickleButton.TextColor = "#FF0000";
-        tickleButton.BackgroundColor = "#000000";
+        var drinkCount = new TextBoxMenuItem();
+        drinkCount.InitialX = 1;
+        drinkCount.InitialY = 4;
+        drinkCount.Height = 1;
+        drinkCount.Width = 3;
+        drinkCount.Name = "drinkCount";
+        drinkCount.Text = "5 drinks left";
+        drinkCount.TextColor = "#FF0000";
+        drinkCount.BackgroundColor = "#000000";
+        var playButton = new ButtonMenuItem();
+        playButton.InitialX = 0;
+        playButton.InitialY = 5;
+        playButton.Height = 1;
+        playButton.Width = menuBuilder.getMaxColumns();
+        playButton.Name = "playButton";
+        playButton.Text = "Let's play!";
+        playButton.TextColor = "#FF0000";
+        playButton.BackgroundColor = "#000000";
         menuBuilder.createMenuHeader(menuHeader);
         menuBuilder.createPicture(picture);
         menuBuilder.createProgressBar(progress);
         menuBuilder.createButton(drinkButton);
         menuBuilder.createButton(feedButton);
-        menuBuilder.createButton(tickleButton);
+        menuBuilder.createButton(playButton);
+        menuBuilder.createTextBox(foodCount);
+        menuBuilder.createTextBox(drinkCount);
+        menuBuilder.createTextBox(healthLabel);
     };
     AliveClass.prototype.onSpeechRecognitionResults = function (results) { };
     AliveClass.prototype.onResponseReceived = function (response) {
@@ -301,7 +459,7 @@ var AliveClass = (function () {
         }
     };
     AliveClass.prototype.playRandomResourceByCategory = function (categoryName) {
-        if (this.lastPhoneEventOccurred == categoryName && this.configurationMananger.isSoundPlaying())
+        if (this.lastPhoneEventOccurred == categoryName && this.configurationManager.isSoundPlaying())
             return;
         this.actionManager.stopSound();
         this.lastPhoneEventOccurred = categoryName;
@@ -2040,6 +2198,185 @@ var ViewType = (function () {
 //# sourceMappingURL=IPictureMenuItem.js.map
 //# sourceMappingURL=IProgressBarMenuItem.js.map
 //# sourceMappingURL=ITextBoxMenuItem.js.map
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+var MiniGame = (function () {
+    function MiniGame() {
+    }
+    return MiniGame;
+}());
+var CatchMiniGame = (function (_super) {
+    __extends(CatchMiniGame, _super);
+    function CatchMiniGame(handler, resourceHelper, finishCallback) {
+        var _this = _super.call(this) || this;
+        _this.menuManager = handler.getMenuManager();
+        _this.actionManager = handler.getActionManager();
+        _this.characterManager = handler.getCharacterManager();
+        _this.configurationManager = handler.getConfigurationManager();
+        _this.resourceHelper = resourceHelper;
+        _this.finishCallback = finishCallback;
+        return _this;
+    }
+    CatchMiniGame.prototype.onStart = function (currentTime) {
+        this.lastDecreaseTime = currentTime;
+        this.touches = 1;
+        this.progress = 50;
+        this.difficulty = Math.random() * 100;
+        var difficultyTrimmed = this.difficulty.toString().substring(0, 4);
+        this.actionManager.showMessage("This is a catch game! i will walk around the screen, and you will need to catch me :D "
+            + "\nOnce the progress bar in the menu will reach 100%, you will win! but if it reaches 0%... i will win! :D"
+            + "\nThe phone will vibrate everytime you do it incorrectly"
+            + "\nDifficulty: " + difficultyTrimmed, "#6599FF", "#ffffff", 10000);
+        this.menuManager.setProperty("healthProgress", "maxprogress", "100");
+        this.menuManager.setProperty("healthProgress", "progress", this.progress.toString());
+        this.startTime = currentTime;
+        this.gameStartTime = this.startTime + 10000;
+    };
+    CatchMiniGame.prototype.onTick = function (currentTime) {
+        if (currentTime > this.gameStartTime) {
+            this.updateProgress(currentTime);
+            this.moveToRandomLocation(currentTime);
+            this.drawRandomImage(currentTime);
+        }
+        else {
+            this.lastDecreaseTime = currentTime;
+            this.touches = 1;
+        }
+    };
+    CatchMiniGame.prototype.updateProgress = function (currentTime) {
+        var ongoingTime = currentTime - this.lastDecreaseTime;
+        if (ongoingTime > 1000) {
+            this.progress = this.progress - 1 - this.difficulty / 100;
+            this.lastDecreaseTime = currentTime;
+        }
+        if (this.progress <= 0) {
+            this.finishCallback(false);
+        }
+        if (this.progress < 20)
+            this.menuManager.setProperty("healthProgress", "frontcolor", "#EC2027");
+        else if (this.progress < 60)
+            this.menuManager.setProperty("healthProgress", "frontcolor", "#E59400");
+        this.menuManager.setProperty("healthProgress", "Progress", this.progress.toString());
+    };
+    CatchMiniGame.prototype.moveToRandomLocation = function (currentTime) {
+        var randomMove = Math.floor(Math.random() * this.difficulty * 60) - Math.floor(Math.random() * this.difficulty * 60);
+        this.actionManager.move(randomMove, randomMove, 250);
+    };
+    CatchMiniGame.prototype.drawRandomImage = function (currentTime) {
+        if (currentTime - this.lastDrawTime < 5000)
+            return;
+        this.lastDrawTime = currentTime;
+        var randomImage = this.resourceHelper.chooseRandomImage("laughing");
+        if (randomImage != null)
+            this.actionManager.draw(randomImage, this.configurationManager.getMaximalResizeRatio(), false);
+    };
+    CatchMiniGame.prototype.onEventOccured = function (eventName) {
+        var now = this.configurationManager.getCurrentTime().currentTimeMillis;
+        switch (eventName) {
+            case "touch":
+                this.handleTouch(now);
+                break;
+            case "stop":
+                if (now - this.gameStartTime > 0)
+                    this.finishCallback(false);
+                break;
+        }
+    };
+    CatchMiniGame.prototype.handleTouch = function (currentTime) {
+        this.touches++;
+        this.progress += this.touches;
+        if (this.progress <= 0)
+            this.finishCallback(false);
+        else if (this.progress >= 100)
+            this.finishCallback(true);
+    };
+    return CatchMiniGame;
+}(MiniGame));
+var HideAndSeekMiniGame = (function (_super) {
+    __extends(HideAndSeekMiniGame, _super);
+    function HideAndSeekMiniGame(handler, finishCallback) {
+        var _this = _super.call(this) || this;
+        _this.menuManager = handler.getMenuManager();
+        _this.actionManager = handler.getActionManager();
+        _this.characterManager = handler.getCharacterManager();
+        _this.configurationManager = handler.getConfigurationManager();
+        _this.finishCallback = finishCallback;
+        return _this;
+    }
+    HideAndSeekMiniGame.prototype.onStart = function (currentTime) {
+        this.catches = 0;
+        this.goalCatches = Math.floor(Math.random() * 20) + 1;
+        this.gameTime = Math.floor(this.goalCatches * Math.random() * 10) + 5;
+        this.actionManager.showMessage("This is a hide and seek game! i will hide, and your job is to catch me "
+            + this.goalCatches + " times in "
+            + this.gameTime
+            + " seconds! :D \nThe phone will vibrate everytime you catch me", "#6599FF", "#ffffff", 10000);
+        this.menuManager.setProperty("healthProgress", "maxprogress", this.gameTime.toString());
+        this.menuManager.setProperty("healthProgress", "progress", this.gameTime.toString());
+        this.startTime = currentTime;
+        this.gameStartTime = this.startTime + 10000;
+    };
+    HideAndSeekMiniGame.prototype.onTick = function (currentTime) {
+        if (currentTime > this.gameStartTime) {
+            this.actionManager.animateAlpha(0, 50);
+            this.updateProgress(currentTime);
+            this.moveToRandomLocation(currentTime);
+        }
+        else {
+            this.catches = 0;
+        }
+        if (currentTime - this.startTime > this.gameTime * 1000) {
+            this.finishCallback(false);
+        }
+    };
+    HideAndSeekMiniGame.prototype.updateProgress = function (currentTime) {
+        var ongoingTime = currentTime - this.gameStartTime;
+        var remainingTime = this.gameTime - ongoingTime / 1000;
+        if (remainingTime < 20)
+            this.menuManager.setProperty("healthProgress", "frontcolor", "#EC2027");
+        else if (remainingTime < 40)
+            this.menuManager.setProperty("healthProgress", "frontcolor", "#E59400");
+        this.menuManager.setProperty("healthProgress", "Progress", remainingTime.toString());
+    };
+    HideAndSeekMiniGame.prototype.moveToRandomLocation = function (currentTime) {
+        var randomX = Math.floor(Math.random() * this.configurationManager.getScreenWidth());
+        var randomY = Math.floor(Math.random() * this.configurationManager.getScreenHeight());
+        var currentX = this.characterManager.getCurrentCharacterXPosition();
+        var currentY = this.characterManager.getCurrentCharacterYPosition();
+        var disX = Math.abs(currentX - randomX);
+        var disY = Math.abs(currentY - randomY);
+        var moveX = currentX > randomX ? -disX : disX;
+        var moveY = currentY > randomY ? -disY : disY;
+        this.actionManager.move(moveX, moveY, 20);
+    };
+    HideAndSeekMiniGame.prototype.onEventOccured = function (eventName) {
+        switch (eventName) {
+            case "touch":
+                this.catches++;
+                this.actionManager.showSystemMessage("catches: " + this.catches.toString());
+                this.actionManager.vibrate(250);
+                if (this.catches >= this.goalCatches) {
+                    this.finishCallback(true);
+                    return;
+                }
+                break;
+            case "stop":
+                if (this.configurationManager.getCurrentTime().currentTimeMillis - this.gameStartTime > 0)
+                    this.finishCallback(false);
+                break;
+        }
+    };
+    return HideAndSeekMiniGame;
+}(MiniGame));
+//# sourceMappingURL=Minigame.js.map
 //# sourceMappingURL=IAliveLatLng.js.map
 //# sourceMappingURL=IAliveLatLngBounds.js.map
 //# sourceMappingURL=IAliveLocation.js.map
