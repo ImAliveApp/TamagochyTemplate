@@ -235,7 +235,7 @@ var AliveClass = (function () {
             this.lastEatingTime = this.configurationManager.getCurrentTime().currentTimeMillis;
             if (viewName == "feedButton") {
                 if (this.foodCount <= 0) {
-                    this.actionManager.showMessage("You have no food, please play with me to earn some", "#000000", "#aaaaaa", 2000);
+                    this.actionManager.showMessage("We don't have anymore food, please play with me to earn some", "#000000", "#aaaaaa", 2000);
                     return;
                 }
                 this.foodCount -= 1;
@@ -243,7 +243,7 @@ var AliveClass = (function () {
             }
             else {
                 if (this.drinkCount <= 0) {
-                    this.actionManager.showMessage("You have no food, please play with me to earn some", "#000000", "#aaaaaa", 2000);
+                    this.actionManager.showMessage("We don't have anymore drinks, please play with me to earn some", "#000000", "#aaaaaa", 2000);
                     return;
                 }
                 this.drinkCount -= 1;
@@ -257,16 +257,7 @@ var AliveClass = (function () {
             this.menuManager.setProperty("healthProgress", "progress", this.Hp.toString());
         }
         else if (viewName == "playButton") {
-            if (this.playingMiniGame) {
-                this.miniGame.onEventOccured("stop");
-            }
-            else {
-                var now = this.currentTime;
-                if (now - this.lastPlayGameClick < 2000)
-                    return;
-                this.lastPlayGameClick = now;
-                this.playRandomMiniGame(now);
-            }
+            this.actionManager.draw("crying.gif", this.configurationManager.getMaximalResizeRatio(), false);
         }
     };
     AliveClass.prototype.playRandomMiniGame = function (currentTime) {
