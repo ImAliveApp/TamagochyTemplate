@@ -257,7 +257,16 @@ var AliveClass = (function () {
             this.menuManager.setProperty("healthProgress", "progress", this.Hp.toString());
         }
         else if (viewName == "playButton") {
-            this.actionManager.draw("crying.gif", this.configurationManager.getMaximalResizeRatio(), false);
+            if (this.playingMiniGame) {
+                this.miniGame.onEventOccured("stop");
+            }
+            else {
+                var now = this.currentTime;
+                if (now - this.lastPlayGameClick < 2000)
+                    return;
+                this.lastPlayGameClick = now;
+                this.playRandomMiniGame(now);
+            }
         }
     };
     AliveClass.prototype.playRandomMiniGame = function (currentTime) {
@@ -2070,10 +2079,10 @@ var collections;
     collections.BSTree = BSTree;
 })(collections || (collections = {}));
 //# sourceMappingURL=collections.js.map
+//# sourceMappingURL=ICalendarEvent.js.map
 //# sourceMappingURL=IAliveLocation.js.map
 //# sourceMappingURL=IAliveUserActivity.js.map
 //# sourceMappingURL=IAliveWeather.js.map
-//# sourceMappingURL=ICalendarEvent.js.map
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
         ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||

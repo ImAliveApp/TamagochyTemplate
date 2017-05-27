@@ -257,7 +257,16 @@ var AliveClass = (function () {
             this.menuManager.setProperty("healthProgress", "progress", this.Hp.toString());
         }
         else if (viewName == "playButton") {
-            this.actionManager.draw("crying.gif", this.configurationManager.getMaximalResizeRatio(), false);
+            if (this.playingMiniGame) {
+                this.miniGame.onEventOccured("stop");
+            }
+            else {
+                var now = this.currentTime;
+                if (now - this.lastPlayGameClick < 2000)
+                    return;
+                this.lastPlayGameClick = now;
+                this.playRandomMiniGame(now);
+            }
         }
     };
     AliveClass.prototype.playRandomMiniGame = function (currentTime) {
