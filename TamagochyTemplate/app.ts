@@ -16,7 +16,7 @@ class AliveClass implements IAliveAgent {
     private managersHandler: IManagersHandler;
     private resourceManagerHelper: ResourceManagerHelper;
 
-    private currentRandomDrawingCategory: string;
+    private categoryOnScreen: string;
     private lastVisabilityChangeTime: number;
     private sleeping: boolean;
     private visible: boolean;
@@ -197,7 +197,7 @@ class AliveClass implements IAliveAgent {
      */
     DrawAndPlayRandomNormalResource(): void {
         let random = Math.random();
-        this.currentRandomDrawingCategory = "CHARACTER_ACTIVATION";
+        let randomCategory = "CHARACTER_ACTIVATION";
         this.actionManager.stopSound();
         if (random > 0.85) {
             let allCharacterCategories = this.resourceManager.getAllResourceCategories();
@@ -207,12 +207,11 @@ class AliveClass implements IAliveAgent {
 
             let randomIndex = Math.floor(Math.random() * (allCharacterCategories.length - 1));
 
-            this.currentRandomDrawingCategory = allCharacterCategories[randomIndex];
+            randomCategory = allCharacterCategories[randomIndex];
         }
 
         this.lastDrawTime = this.configurationManager.getCurrentTime().currentTimeMillis;
-        this.drawAndPlayRandomResourceByCategory(this.currentRandomDrawingCategory);
-
+        this.drawAndPlayRandomResourceByCategory(randomCategory);
     }
 
     /**
@@ -683,6 +682,9 @@ class AliveClass implements IAliveAgent {
      * @param categoryName The name of the category that the image resource belongs to.
      */
     drawRandomResourceByCategory(categoryName: string): void {
+        if (categoryName == this.categoryOnScreen) return;
+
+        this.categoryOnScreen = categoryName;
         let image = this.resourceManagerHelper.chooseRandomImage(categoryName);
         if (image != null) {
             this.actionManager.draw(image, this.resizeRatio, false);

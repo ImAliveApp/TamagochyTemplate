@@ -102,7 +102,7 @@ var AliveClass = (function () {
     };
     AliveClass.prototype.DrawAndPlayRandomNormalResource = function () {
         var random = Math.random();
-        this.currentRandomDrawingCategory = "CHARACTER_ACTIVATION";
+        var randomCategory = "CHARACTER_ACTIVATION";
         this.actionManager.stopSound();
         if (random > 0.85) {
             var allCharacterCategories = this.resourceManager.getAllResourceCategories();
@@ -110,10 +110,10 @@ var AliveClass = (function () {
             allCharacterCategories.splice(allCharacterCategories.indexOf('drinking'), 1);
             allCharacterCategories.splice(allCharacterCategories.indexOf('laughing'), 1);
             var randomIndex = Math.floor(Math.random() * (allCharacterCategories.length - 1));
-            this.currentRandomDrawingCategory = allCharacterCategories[randomIndex];
+            randomCategory = allCharacterCategories[randomIndex];
         }
         this.lastDrawTime = this.configurationManager.getCurrentTime().currentTimeMillis;
-        this.drawAndPlayRandomResourceByCategory(this.currentRandomDrawingCategory);
+        this.drawAndPlayRandomResourceByCategory(randomCategory);
     };
     AliveClass.prototype.Hungry = function () {
         this.Hp = this.Hp - 10;
@@ -453,6 +453,9 @@ var AliveClass = (function () {
         this.playRandomResourceByCategory(categoryName);
     };
     AliveClass.prototype.drawRandomResourceByCategory = function (categoryName) {
+        if (categoryName == this.categoryOnScreen)
+            return;
+        this.categoryOnScreen = categoryName;
         var image = this.resourceManagerHelper.chooseRandomImage(categoryName);
         if (image != null) {
             this.actionManager.draw(image, this.resizeRatio, false);
