@@ -282,8 +282,6 @@ class AliveClass implements IAliveAgent {
         if (speed != -999) {
             this.actionManager.stopSound();
             this.drawRandomResourceByCategory(category);
-            if (Math.random() > 0.8)
-                this.playRandomResourceByCategory(category);
 
             this.actionManager.move(speed, 0, 250);
         }
