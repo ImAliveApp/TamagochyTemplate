@@ -58,7 +58,7 @@
 
     /**
      * This method will rotate the image resource on the screen.
-     * @param degree The degree to rotate the image by.
+     * @param degree The degree to rotate the image to.
      * @param duration How long should the rotation animation take? (in milliseconds).
      */
     rotateImage(degree: number, duration: number): void;

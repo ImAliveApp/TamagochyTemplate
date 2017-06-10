@@ -3,3 +3,4 @@ C:\Users\Hay Zohar\Documents\GitHub\TamagochyTemplate\TamagochyTemplate\bin\Tama
 C:\Users\Hay Zohar\Documents\GitHub\TamagochyTemplate\TamagochyTemplate\bin\TamagochyTemplate.pdb
 C:\Users\Hay Zohar\Documents\GitHub\TamagochyTemplate\TamagochyTemplate\obj\Debug\TamagochyTemplate.dll
 C:\Users\Hay Zohar\Documents\GitHub\TamagochyTemplate\TamagochyTemplate\obj\Debug\TamagochyTemplate.pdb
+C:\Users\Hay Zohar\Documents\GitHub\TamagochyTemplate\TamagochyTemplate\obj\Debug\TamagochyTemplate.csprojResolveAssemblyReference.cache
