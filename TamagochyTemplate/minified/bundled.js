@@ -469,7 +469,7 @@ var AliveClass = (function () {
             this.actionManager.playSound(sound, false);
         }
     };
-    AliveClass.prototype.onApplicationEventOccurred = function (eventName, jsonedData) {
+    AliveClass.prototype.onUserEventOccurred = function (eventName, jsonedData) {
     };
     return AliveClass;
 }());
@@ -2151,10 +2151,10 @@ var collections;
     collections.BSTree = BSTree;
 })(collections || (collections = {}));
 //# sourceMappingURL=collections.js.map
+//# sourceMappingURL=ICalendarEvent.js.map
 //# sourceMappingURL=IAliveLocation.js.map
 //# sourceMappingURL=IAliveUserActivity.js.map
 //# sourceMappingURL=IAliveWeather.js.map
-//# sourceMappingURL=ICalendarEvent.js.map
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
         ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||

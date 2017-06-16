@@ -1,4 +1,4 @@
 ﻿interface IInformationManager {
     getUserInformation(): IUserInformation;
-    getInstalledCharacters(): Array<ICharacter>;
+    getDownloadedCharacters(): Array<ICharacter>;
 }
