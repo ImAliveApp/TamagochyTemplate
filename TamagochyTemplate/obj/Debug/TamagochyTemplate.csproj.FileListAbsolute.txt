@@ -1,6 +1,6 @@
+C:\Users\Hay Zohar\Documents\GitHub\TamagochyTemplate\TamagochyTemplate\obj\Debug\TamagochyTemplate.csprojResolveAssemblyReference.cache
 C:\Users\Hay Zohar\Documents\GitHub\TamagochyTemplate\TamagochyTemplate\bin\TamagochyTemplate.dll.config
 C:\Users\Hay Zohar\Documents\GitHub\TamagochyTemplate\TamagochyTemplate\bin\TamagochyTemplate.dll
 C:\Users\Hay Zohar\Documents\GitHub\TamagochyTemplate\TamagochyTemplate\bin\TamagochyTemplate.pdb
 C:\Users\Hay Zohar\Documents\GitHub\TamagochyTemplate\TamagochyTemplate\obj\Debug\TamagochyTemplate.dll
 C:\Users\Hay Zohar\Documents\GitHub\TamagochyTemplate\TamagochyTemplate\obj\Debug\TamagochyTemplate.pdb
-C:\Users\Hay Zohar\Documents\GitHub\TamagochyTemplate\TamagochyTemplate\obj\Debug\TamagochyTemplate.csprojResolveAssemblyReference.cache

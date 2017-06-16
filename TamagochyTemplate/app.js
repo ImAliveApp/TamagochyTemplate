@@ -469,6 +469,8 @@ var AliveClass = (function () {
             this.actionManager.playSound(sound, false);
         }
     };
+    AliveClass.prototype.onUserEventOccurred = function (eventName, jsonedData) {
+    };
     return AliveClass;
 }());
 AliveClass.UNREGISTERED_CATEGORY_RESOURCE = -999;

@@ -10,4 +10,5 @@
     getSpeechToTextManager(): ISpeechToTextManager;
     getTextToSpeechManager(): ITextToSpeechManager;
     getCalendarManager(): ICalendarManager;
+    getInformationManager(): IInformationManager;
 }

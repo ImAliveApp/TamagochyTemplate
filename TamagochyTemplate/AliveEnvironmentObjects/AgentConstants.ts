@@ -19,6 +19,20 @@
     static get ORIENTATION_PORTRAIT(): number { return 1 }
     static get ORIENTATION_LANDSCAPE(): number { return 2 }
 
+    static get FUNNY_CATEGORY(): string { return "FUNNY" }
+    static get SCARY_CATEGORY(): string { return "SCARY" }
+    static get GENERAL_CATEGORY(): string { return "GENERAL" }
+    static get MINI_GAMES_CATEGORY(): string { return "MINI GAMES" }
+    static get REAL_PEOPLE_CATEGORY(): string { return "REAL PEOPLE" }
+    static get ADULT_CATEGORY(): string { return "ADULT" }
+    static get CARTOON_CATEGORY(): string { return "CARTOON" }
+
+    static get APPLICATION_EVENT_CHARACTER_UP_VOTE(): string { return "APPLICATION_EVENT_CHARACTER_UP_VOTE" }
+    static get APPLICATION_EVENT_CHARACTER_DOWN_VOTE(): string { return "APPLICATION_EVENT_CHARACTER_DOWN_VOTE" }
+    static get APPLICATION_EVENT_CHARACTER_DOWNLOAD(): string { return "APPLICATION_EVENT_CHARACTER_DOWNLOAD" }
+    static get APPLICATION_EVENT_CHARACTER_DELETED(): string { return "APPLICATION_EVENT_CHARACTER_DELETED" }
+    static get APPLICATION_EVENT_USER_CHANGE_PICTURE(): string { return "APPLICATION_EVENT_USER_CHANGE_PICTURE" }
+    static get APPLICATION_EVENT_USER_COMMENT(): string { return "APPLICATION_EVENT_USER_COMMENT" }
 
     static get IConfigurationManager(): string{ return "IConfigurationManager" };
     static get IActionManager(): string { return "IActionManager" };
