@@ -27,19 +27,21 @@
     static get ADULT_CATEGORY(): string { return "ADULT" }
     static get CARTOON_CATEGORY(): string { return "CARTOON" }
 
-    static get APPLICATION_EVENT_CHARACTER_UP_VOTE(): string { return "APPLICATION_EVENT_CHARACTER_UP_VOTE" }
-    static get APPLICATION_EVENT_CHARACTER_DOWN_VOTE(): string { return "APPLICATION_EVENT_CHARACTER_DOWN_VOTE" }
-    static get APPLICATION_EVENT_CHARACTER_DOWNLOAD(): string { return "APPLICATION_EVENT_CHARACTER_DOWNLOAD" }
-    static get APPLICATION_EVENT_CHARACTER_DELETED(): string { return "APPLICATION_EVENT_CHARACTER_DELETED" }
-    static get APPLICATION_EVENT_USER_CHANGE_PICTURE(): string { return "APPLICATION_EVENT_USER_CHANGE_PICTURE" }
-    static get APPLICATION_EVENT_USER_COMMENT(): string { return "APPLICATION_EVENT_USER_COMMENT" }
+    static get USER_EVENT_CHARACTER_UP_VOTE(): string { return "USER_EVENT_CHARACTER_UP_VOTE" }
+    static get USER_EVENT_CHARACTER_DOWN_VOTE(): string { return "USER_EVENT_CHARACTER_DOWN_VOTE" }
+    static get USER_EVENT_CHARACTER_DOWNLOAD_STARTED(): string { return "USER_EVENT_CHARACTER_DOWNLOAD_STARTED" }
+    static get USER_EVENT_CHARACTER_DOWNLOAD_CANCELED(): string { return "USER_EVENT_CHARACTER_DOWNLOAD_CANCELED" }
+    static get USER_EVENT_CHARACTER_DOWNLOAD_FINISHED(): string { return "USER_EVENT_CHARACTER_DOWNLOAD_FINISHED" }
+    static get USER_EVENT_CHARACTER_DELETED(): string { return "USER_EVENT_CHARACTER_DELETED" }
+    static get USER_EVENT_USER_CHANGE_PICTURE(): string { return "USER_EVENT_USER_CHANGE_PICTURE" }
+    static get USER_EVENT_USER_COMMENT(): string { return "USER_EVENT_USER_COMMENT" }
 
-    static get IConfigurationManager(): string{ return "IConfigurationManager" };
+    static get IConfigurationManager(): string { return "IConfigurationManager" };
     static get IActionManager(): string { return "IActionManager" };
     static get ICharacterManager(): string { return "ICharacterManager" };
     static get IDatabaseManager(): string { return "IDatabaseManager" };
     static get IResourceManager(): string { return "IResourceManager" };
     static get IMenuManager(): string { return "IMenuManager" };
-    static get IAwarenessManager(): string { return "IAwarenessManager"}
-    
+    static get IAwarenessManager(): string { return "IAwarenessManager" }
+
 };

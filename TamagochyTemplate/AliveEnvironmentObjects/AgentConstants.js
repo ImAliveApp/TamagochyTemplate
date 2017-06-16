@@ -131,33 +131,43 @@ var AgentConstants = (function () {
         enumerable: true,
         configurable: true
     });
-    Object.defineProperty(AgentConstants, "APPLICATION_EVENT_CHARACTER_UP_VOTE", {
-        get: function () { return "APPLICATION_EVENT_CHARACTER_UP_VOTE"; },
+    Object.defineProperty(AgentConstants, "USER_EVENT_CHARACTER_UP_VOTE", {
+        get: function () { return "USER_EVENT_CHARACTER_UP_VOTE"; },
         enumerable: true,
         configurable: true
     });
-    Object.defineProperty(AgentConstants, "APPLICATION_EVENT_CHARACTER_DOWN_VOTE", {
-        get: function () { return "APPLICATION_EVENT_CHARACTER_DOWN_VOTE"; },
+    Object.defineProperty(AgentConstants, "USER_EVENT_CHARACTER_DOWN_VOTE", {
+        get: function () { return "USER_EVENT_CHARACTER_DOWN_VOTE"; },
         enumerable: true,
         configurable: true
     });
-    Object.defineProperty(AgentConstants, "APPLICATION_EVENT_CHARACTER_DOWNLOAD", {
-        get: function () { return "APPLICATION_EVENT_CHARACTER_DOWNLOAD"; },
+    Object.defineProperty(AgentConstants, "USER_EVENT_CHARACTER_DOWNLOAD_STARTED", {
+        get: function () { return "USER_EVENT_CHARACTER_DOWNLOAD_STARTED"; },
         enumerable: true,
         configurable: true
     });
-    Object.defineProperty(AgentConstants, "APPLICATION_EVENT_CHARACTER_DELETED", {
-        get: function () { return "APPLICATION_EVENT_CHARACTER_DELETED"; },
+    Object.defineProperty(AgentConstants, "USER_EVENT_CHARACTER_DOWNLOAD_CANCELED", {
+        get: function () { return "USER_EVENT_CHARACTER_DOWNLOAD_CANCELED"; },
         enumerable: true,
         configurable: true
     });
-    Object.defineProperty(AgentConstants, "APPLICATION_EVENT_USER_CHANGE_PICTURE", {
-        get: function () { return "APPLICATION_EVENT_USER_CHANGE_PICTURE"; },
+    Object.defineProperty(AgentConstants, "USER_EVENT_CHARACTER_DOWNLOAD_FINISHED", {
+        get: function () { return "USER_EVENT_CHARACTER_DOWNLOAD_FINISHED"; },
         enumerable: true,
         configurable: true
     });
-    Object.defineProperty(AgentConstants, "APPLICATION_EVENT_USER_COMMENT", {
-        get: function () { return "APPLICATION_EVENT_USER_COMMENT"; },
+    Object.defineProperty(AgentConstants, "USER_EVENT_CHARACTER_DELETED", {
+        get: function () { return "USER_EVENT_CHARACTER_DELETED"; },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(AgentConstants, "USER_EVENT_USER_CHANGE_PICTURE", {
+        get: function () { return "USER_EVENT_USER_CHANGE_PICTURE"; },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(AgentConstants, "USER_EVENT_USER_COMMENT", {
+        get: function () { return "USER_EVENT_USER_COMMENT"; },
         enumerable: true,
         configurable: true
     });
