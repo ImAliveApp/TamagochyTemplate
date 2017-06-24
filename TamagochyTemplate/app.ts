@@ -310,34 +310,6 @@ class AliveClass implements IAliveAgent {
     }
 
     /**
-     * This method gets called when the user is holding and moving the image of your character (on screen).
-     * @param oldX The X coordinate in the last tick (Top left).
-     * @param oldY The Y coordinate in the last tick (Top left).
-     * @param newX The X coordinate in the current tick (Top left).
-     * @param newY The Y coordinate in the current tick (Top left).
-     */
-    onMove(oldX: number, oldY: number, newX: number, newY: number): void {
-        let Xdiff = Math.abs(oldX - newX);
-        let Ydiff = Math.abs(oldY - newY);
-        if (Xdiff > Ydiff) {
-            if (newX > oldX) {
-                this.drawAndPlayRandomResourceByCategory(AgentConstants.ON_MOVE_RIGHT);
-            }
-            else {
-                this.drawAndPlayRandomResourceByCategory(AgentConstants.ON_MOVE_LEFT);
-            }
-        }
-        else {
-            if (newY > oldY) {
-                this.drawAndPlayRandomResourceByCategory(AgentConstants.ON_MOVE_DOWN);
-            }
-            else {
-                this.drawAndPlayRandomResourceByCategory(AgentConstants.ON_MOVE_UP);
-            }
-        }
-    }
-
-    /**
      * This method gets called when the user raised his finger off the character image (on screen).
      * @param currentX The X coordinate of the character image on screen (Top left).
      * @param currentY The Y coordinate of the character image on the screen (Top left).

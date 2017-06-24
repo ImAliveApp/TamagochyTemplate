@@ -188,26 +188,6 @@ var AliveClass = (function () {
             this.actionManager.showMessage(eventName + " received", "#000000", "#eeeeee", 2000);
         this.drawAndPlayRandomResourceByCategory(eventName);
     };
-    AliveClass.prototype.onMove = function (oldX, oldY, newX, newY) {
-        var Xdiff = Math.abs(oldX - newX);
-        var Ydiff = Math.abs(oldY - newY);
-        if (Xdiff > Ydiff) {
-            if (newX > oldX) {
-                this.drawAndPlayRandomResourceByCategory(AgentConstants.ON_MOVE_RIGHT);
-            }
-            else {
-                this.drawAndPlayRandomResourceByCategory(AgentConstants.ON_MOVE_LEFT);
-            }
-        }
-        else {
-            if (newY > oldY) {
-                this.drawAndPlayRandomResourceByCategory(AgentConstants.ON_MOVE_DOWN);
-            }
-            else {
-                this.drawAndPlayRandomResourceByCategory(AgentConstants.ON_MOVE_UP);
-            }
-        }
-    };
     AliveClass.prototype.onRelease = function (currentX, currentY) {
         if (this.playingMiniGame)
             return;
