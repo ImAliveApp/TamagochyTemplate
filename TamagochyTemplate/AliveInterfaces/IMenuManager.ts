@@ -12,4 +12,9 @@
      * This method will open the character menu.
      */
     openMenu(): void;
+
+    /**
+    * This method will return true if the menu is open.
+    */
+    isMenuOpen(): boolean;
 };
