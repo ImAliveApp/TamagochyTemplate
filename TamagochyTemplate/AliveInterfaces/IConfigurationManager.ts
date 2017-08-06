@@ -73,4 +73,9 @@
     * This method will return the system country in an ISO3 format.
     */
     getSystemISO3Country(): string;
+
+    /**
+     * This method will return the current Ringer mode ('NORMAL', 'VIBRATE', 'SILENT')
+     */
+    getRingerMode(): string;
 };
