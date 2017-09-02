@@ -1,59 +1,130 @@
-﻿class BaseMenuItem {
+﻿class BaseMenuItem implements IBaseMenuItem {
     public Name: string;
     public InitialX: number;
     public InitialY: number;
     public Width: number;
     public Height: number;
-    protected ViewType: number;//no need to change.
 }
 
-class PaintMenuItem extends BaseMenuItem {
+class PaintMenuItem implements IPaintMenuItem {
+    public Name: string;
+    public InitialX: number;
+    public InitialY: number;
+    public Width: number;
+    public Height: number;
     public TextColor: string;
     public BackgroundColor: string;
 }
 
-class PictureMenuItem extends BaseMenuItem {
+class PictureMenuItem implements IPictureMenuItem {
     constructor() {
-        super();
         this.ViewType = ViewType.Picture;
     }
     static UseProfilePicture = "Use Profile Picture";
     static UseCoverPicture = "Use Cover Picture";
-    PictureResourceName: string;
+    protected ViewType: number;//no need to change.
+    public Name: string;
+    public InitialX: number;
+    public InitialY: number;
+    public Width: number;
+    public Height: number;
+    public PictureResourceName: string;
 }
 
-class ButtonMenuItem extends PaintMenuItem {
+class ButtonMenuItem implements IButtonMenuItem {
     constructor() {
-        super();
         this.ViewType = ViewType.Button;
     }
+    protected ViewType: number;//no need to change.
+    public Name: string;
+    public InitialX: number;
+    public InitialY: number;
+    public Width: number;
+    public Height: number;
     public Text: string;
+    public TextColor: string;
+    public BackgroundColor: string;
 }
 
-class CheckBoxMenuItem extends PaintMenuItem {
+class CheckBoxMenuItem implements ICheckBoxMenuItem {
     constructor() {
-        super();
         this.ViewType = ViewType.CheckBox;
     }
+    protected ViewType: number;//no need to change.
+    public Name: string;
+    public InitialX: number;
+    public InitialY: number;
+    public Width: number;
+    public Height: number;
     public Checked: boolean;
     public Text: string;
     public UncheckedText: string;
     public FrontColor: string;
+    public TextColor: string;
+    public BackgroundColor: string;
 }
 
-class TextBoxMenuItem extends PaintMenuItem {
+class SwitchMenuItem implements ISwitchMenuItem {
     constructor() {
-        super();
+        this.ViewType = ViewType.Switch;
+    }
+    protected ViewType: number;//no need to change.
+    public Name: string;
+    public InitialX: number;
+    public InitialY: number;
+    public Width: number;
+    public Height: number;
+    public Checked: boolean;
+    public Text: string;
+    public UncheckedText: string;
+    public FrontColor: string;
+    public TextColor: string;
+    public BackgroundColor: string;
+}
+
+class TextBoxMenuItem implements ITextBoxMenuItem {
+    constructor() {
         this.ViewType = ViewType.TextBox;
     }
+    protected ViewType: number;//no need to change.
+    public Name: string;
+    public InitialX: number;
+    public InitialY: number;
+    public Width: number;
+    public Height: number;
+    public TextColor: string;
+    public BackgroundColor: string;
     public Text: string;
 }
 
-class ProgressBarMenuItem extends PaintMenuItem {
+class HyperLinkMenuItem implements IHyperLinkMenuItem {
     constructor() {
-        super();
+        this.ViewType = ViewType.HyperLink;
+    }
+    protected ViewType: number;//no need to change.
+    public Name: string;
+    public InitialX: number;
+    public InitialY: number;
+    public Width: number;
+    public Height: number;
+    public TextColor: string;
+    public BackgroundColor: string;
+    public Text: string;
+    public Link: string;
+}
+
+class ProgressBarMenuItem implements IProgressBarMenuItem {
+    constructor() {
         this.ViewType = ViewType.ProgressBar;
     }
+    protected ViewType: number;//no need to change.
+    public Name: string;
+    public InitialX: number;
+    public InitialY: number;
+    public Width: number;
+    public Height: number;
+    public TextColor: string;
+    public BackgroundColor: string;
     public MaxProgress: number;
     public FrontColor: string;
     public Progress: number;

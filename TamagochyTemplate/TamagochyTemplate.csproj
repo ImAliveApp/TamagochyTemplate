@@ -47,10 +47,12 @@
     <TypeScriptCompile Include="AliveEnvironmentObjects\MenuInterfaces\IBaseMenuItem.ts" />
     <TypeScriptCompile Include="AliveEnvironmentObjects\MenuInterfaces\IButtonMenuItem.ts" />
     <TypeScriptCompile Include="AliveEnvironmentObjects\MenuInterfaces\ICheckBoxMenuItem.ts" />
+    <TypeScriptCompile Include="AliveEnvironmentObjects\MenuInterfaces\IHyperLinkMenuItem.ts" />
     <TypeScriptCompile Include="AliveEnvironmentObjects\MenuInterfaces\IMenuHeader.ts" />
     <TypeScriptCompile Include="AliveEnvironmentObjects\MenuInterfaces\IPaintMenuItem.ts" />
     <TypeScriptCompile Include="AliveEnvironmentObjects\MenuInterfaces\IPictureMenuItem.ts" />
     <TypeScriptCompile Include="AliveEnvironmentObjects\MenuInterfaces\IProgressBarMenuItem.ts" />
+    <TypeScriptCompile Include="AliveEnvironmentObjects\MenuInterfaces\ISwitchMenuItem.ts" />
     <TypeScriptCompile Include="AliveEnvironmentObjects\MenuInterfaces\ITextBoxMenuItem.ts" />
     <TypeScriptCompile Include="AliveEnvironmentObjects\Minigame\Minigame.ts" />
     <TypeScriptCompile Include="AliveEnvironmentObjects\Places\IAliveLatLng.ts" />

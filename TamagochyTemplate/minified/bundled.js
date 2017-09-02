@@ -2144,75 +2144,60 @@ var collections;
 //# sourceMappingURL=IAliveUserActivity.js.map
 //# sourceMappingURL=IAliveWeather.js.map
 //# sourceMappingURL=ICalendarEvent.js.map
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
 var BaseMenuItem = (function () {
     function BaseMenuItem() {
     }
     return BaseMenuItem;
 }());
-var PaintMenuItem = (function (_super) {
-    __extends(PaintMenuItem, _super);
+var PaintMenuItem = (function () {
     function PaintMenuItem() {
-        return _super !== null && _super.apply(this, arguments) || this;
     }
     return PaintMenuItem;
-}(BaseMenuItem));
-var PictureMenuItem = (function (_super) {
-    __extends(PictureMenuItem, _super);
+}());
+var PictureMenuItem = (function () {
     function PictureMenuItem() {
-        var _this = _super.call(this) || this;
-        _this.ViewType = ViewType.Picture;
-        return _this;
+        this.ViewType = ViewType.Picture;
     }
     return PictureMenuItem;
-}(BaseMenuItem));
+}());
 PictureMenuItem.UseProfilePicture = "Use Profile Picture";
 PictureMenuItem.UseCoverPicture = "Use Cover Picture";
-var ButtonMenuItem = (function (_super) {
-    __extends(ButtonMenuItem, _super);
+var ButtonMenuItem = (function () {
     function ButtonMenuItem() {
-        var _this = _super.call(this) || this;
-        _this.ViewType = ViewType.Button;
-        return _this;
+        this.ViewType = ViewType.Button;
     }
     return ButtonMenuItem;
-}(PaintMenuItem));
-var CheckBoxMenuItem = (function (_super) {
-    __extends(CheckBoxMenuItem, _super);
+}());
+var CheckBoxMenuItem = (function () {
     function CheckBoxMenuItem() {
-        var _this = _super.call(this) || this;
-        _this.ViewType = ViewType.CheckBox;
-        return _this;
+        this.ViewType = ViewType.CheckBox;
     }
     return CheckBoxMenuItem;
-}(PaintMenuItem));
-var TextBoxMenuItem = (function (_super) {
-    __extends(TextBoxMenuItem, _super);
+}());
+var SwitchMenuItem = (function () {
+    function SwitchMenuItem() {
+        this.ViewType = ViewType.Switch;
+    }
+    return SwitchMenuItem;
+}());
+var TextBoxMenuItem = (function () {
     function TextBoxMenuItem() {
-        var _this = _super.call(this) || this;
-        _this.ViewType = ViewType.TextBox;
-        return _this;
+        this.ViewType = ViewType.TextBox;
     }
     return TextBoxMenuItem;
-}(PaintMenuItem));
-var ProgressBarMenuItem = (function (_super) {
-    __extends(ProgressBarMenuItem, _super);
+}());
+var HyperLinkMenuItem = (function () {
+    function HyperLinkMenuItem() {
+        this.ViewType = ViewType.HyperLink;
+    }
+    return HyperLinkMenuItem;
+}());
+var ProgressBarMenuItem = (function () {
     function ProgressBarMenuItem() {
-        var _this = _super.call(this) || this;
-        _this.ViewType = ViewType.ProgressBar;
-        return _this;
+        this.ViewType = ViewType.ProgressBar;
     }
     return ProgressBarMenuItem;
-}(PaintMenuItem));
+}());
 //# sourceMappingURL=BaseMenuItem.js.map
 var MenuHeader = (function () {
     function MenuHeader() {
@@ -2248,16 +2233,28 @@ var ViewType = (function () {
         enumerable: true,
         configurable: true
     });
+    Object.defineProperty(ViewType, "Switch", {
+        get: function () { return 5; },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(ViewType, "HyperLink", {
+        get: function () { return 6; },
+        enumerable: true,
+        configurable: true
+    });
     return ViewType;
 }());
 //# sourceMappingURL=ViewType.js.map
 //# sourceMappingURL=IBaseMenuItem.js.map
 //# sourceMappingURL=IButtonMenuItem.js.map
 //# sourceMappingURL=ICheckBoxMenuItem.js.map
+//# sourceMappingURL=IHyperLinkMenuItem.js.map
 //# sourceMappingURL=IMenuHeader.js.map
 //# sourceMappingURL=IPaintMenuItem.js.map
 //# sourceMappingURL=IPictureMenuItem.js.map
 //# sourceMappingURL=IProgressBarMenuItem.js.map
+//# sourceMappingURL=ISwitchMenuItem.js.map
 //# sourceMappingURL=ITextBoxMenuItem.js.map
 //# sourceMappingURL=IAliveLatLng.js.map
 //# sourceMappingURL=IAliveLatLngBounds.js.map

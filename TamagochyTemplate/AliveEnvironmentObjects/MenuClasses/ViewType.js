@@ -26,6 +26,16 @@ var ViewType = (function () {
         enumerable: true,
         configurable: true
     });
+    Object.defineProperty(ViewType, "Switch", {
+        get: function () { return 5; },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(ViewType, "HyperLink", {
+        get: function () { return 6; },
+        enumerable: true,
+        configurable: true
+    });
     return ViewType;
 }());
 //# sourceMappingURL=ViewType.js.map
