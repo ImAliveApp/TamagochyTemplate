@@ -56,6 +56,7 @@ class AliveClass implements IAliveAgent {
 
     /**
      * This method gets called once when the character is being activated by the system.
+     * You can only get the references to the managers, but you can NOT use them untill onTick is called.
      * @param handler An object that allows the code to get reference to the managers.
      * @param disabledPermissions A list of permissions that the user disabled.
      */
